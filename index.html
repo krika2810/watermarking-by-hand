@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Watermarking by Hand - Session Notes</title>
+<meta name="description" content="Notes, walkthrough, transcript and screenshots from 'Watermarking by hand with Mohsena Ashraf', an AI by Hand seminar hosted by Prof. Tom Yeh.">
+<style>
+:root{
+  --bg:#0b1020; --bg2:#111831; --card:#151d38; --card2:#1a2342;
+  --text:#e8ecf6; --muted:#9aa5c4; --accent:#7c8cff; --accent2:#4fd1c5;
+  --border:#26304f; --shadow:0 10px 30px rgba(0,0,0,.35);
+  --code:#0d1428;
+}
+[data-theme="light"]{
+  --bg:#f4f6fc; --bg2:#ffffff; --card:#ffffff; --card2:#f0f3fb;
+  --text:#1a2140; --muted:#5a6486; --accent:#4c5fd5; --accent2:#0d9488;
+  --border:#dde3f2; --shadow:0 10px 26px rgba(40,55,120,.10);
+  --code:#eef1fa;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{overflow-x:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.65;transition:background .25s,color .25s}
+a{color:var(--accent)}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+header.topbar{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.topbar-in{display:flex;align-items:center;gap:14px;padding:12px 20px;max-width:960px;margin:0 auto}
+.topbar .brand{font-weight:700;font-size:15px;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.theme-btn{margin-left:auto;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:6px 14px;font-size:13px;cursor:pointer}
+.theme-btn:hover{border-color:var(--accent)}
+nav.tabs{position:sticky;top:53px;z-index:49;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.tabs-in{display:flex;gap:6px;overflow-x:auto;padding:10px 20px;max-width:960px;margin:0 auto;scrollbar-width:none}
+.tabs-in::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;background:transparent;border:1px solid transparent;color:var(--muted);padding:7px 16px;border-radius:999px;font-size:14px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--card);border-color:var(--border);color:var(--text);font-weight:600}
+.hero{padding:56px 0 30px;background:radial-gradient(1200px 400px at 20% -10%,rgba(124,140,255,.20),transparent),radial-gradient(900px 380px at 85% -20%,rgba(79,209,197,.15),transparent)}
+.hero h1{font-size:clamp(26px,5vw,40px);line-height:1.2;letter-spacing:-.5px}
+.hero h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.sub{margin-top:12px;color:var(--muted);font-size:16px;max-width:720px}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--muted)}
+.chip b{color:var(--text);font-weight:600}
+.hero-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;text-decoration:none;font-weight:600;font-size:14px;padding:10px 18px;border-radius:10px;border:none;cursor:pointer}
+.btn.ghost{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn:hover{filter:brightness(1.08)}
+.panel{display:none;padding:34px 0 60px}
+.panel.active{display:block}
+.step{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px 26px 22px;margin:0 0 26px;box-shadow:var(--shadow)}
+.step-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.step-num{flex:0 0 auto;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px}
+.step h2{font-size:21px;letter-spacing:-.2px}
+.step h3{font-size:16px;margin:16px 0 6px;color:var(--accent2)}
+.step p{margin:10px 0;color:var(--text)}
+.step p.dim,.dim{color:var(--muted)}
+.step ul{margin:10px 0 10px 22px}
+.step li{margin:6px 0}
+.callout{border-left:3px solid var(--accent2);background:var(--card2);border-radius:0 12px 12px 0;padding:12px 16px;margin:14px 0;font-size:14.5px}
+.callout b{color:var(--accent2)}
+table.dt{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;background:var(--code);border-radius:10px;overflow:hidden;table-layout:fixed}
+table.dt th,table.dt td{padding:8px 12px;border:1px solid var(--border);text-align:left;word-wrap:break-word;overflow-wrap:break-word}
+table.dt th{background:var(--card2);font-weight:600}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--code);border:1px solid var(--border);border-radius:6px;padding:1px 7px;font-size:13.5px}
+figure{margin:18px 0}
+figure img{width:100%;border-radius:12px;border:1px solid var(--border);display:block;cursor:zoom-in}
+figcaption{font-size:13px;color:var(--muted);margin-top:8px}
+.term{border-bottom:1px dotted var(--accent2);cursor:help;position:relative}
+.term::after{content:attr(data-tip);position:absolute;left:0;bottom:135%;width:max-content;max-width:280px;background:var(--card2);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;line-height:1.5;opacity:0;pointer-events:none;transition:opacity .15s;z-index:20;box-shadow:var(--shadow)}
+.term:hover::after,.term:focus::after{opacity:1}
+.ttoolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+.ttoolbar .note{font-size:13px;color:var(--muted)}
+pre.transcript{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;white-space:pre-wrap;word-wrap:break-word;font-size:14.5px;line-height:1.75;max-height:none;font-family:inherit;color:var(--text)}
+pre.transcript p{margin-bottom:14px}
+.qa{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+.qa .q{font-weight:600}
+.qa .q .who{color:var(--accent);font-weight:600}
+.qa .a{margin-top:8px;color:var(--muted)}
+.qa .a .who{color:var(--accent2);font-weight:600}
+.qa .unanswered{margin-top:8px;color:var(--muted);font-style:italic;font-size:14px}
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+.gitem{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.gitem b{color:var(--accent2)}
+.gitem p{font-size:14px;color:var(--muted);margin-top:6px}
+footer{border-top:1px solid var(--border);padding:26px 0 50px;color:var(--muted);font-size:13.5px}
+.copy-ok{color:var(--accent2)!important;border-color:var(--accent2)!important}
+@media (max-width:640px){
+  .hero{padding:38px 0 22px}
+  .step{padding:20px 18px}
+  .step h2{font-size:19px}
+  .topbar .brand{font-size:13.5px}
+  nav.tabs{top:50px}
+}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="topbar-in">
+  <div class="brand">Watermarking by Hand - Session Notes</div>
+  <button class="theme-btn" id="themeToggle" aria-label="Toggle light and dark theme">Light mode</button>
+</div></header>
+<nav class="tabs"><div class="tabs-in" id="tabs">
+  <button class="tab active" data-panel="walk">Walkthrough</button>
+  <button class="tab" data-panel="transcript">Transcript</button>
+  <button class="tab" data-panel="shots">Screenshots</button>
+  <button class="tab" data-panel="qa">Chat Q&amp;A</button>
+  <button class="tab" data-panel="glossary">Glossary</button>
+</div></nav>
+
+<section class="hero"><div class="wrap">
+  <h1>Watermarking AI text, <span>by hand</span></h1>
+  <p class="sub">Step-by-step notes from the live AI by Hand seminar where Mohsena Ashraf built Claude-style text watermarking - candidate tokens, pseudorandom g-values and tournament sampling - inside an Excel workbook, hosted by Prof. Tom Yeh.</p>
+  <div class="meta">
+    <div class="chip">Session: <b>Fri Oct 17, 2026, 12:00-1:05 AM SGT</b></div>
+    <div class="chip">Presenter: <b>Mohsena Ashraf</b></div>
+    <div class="chip">Host: <b>Prof. Tom Yeh</b></div>
+    <div class="chip">Series: <b>Frontier AI Seminar, Fall 2026</b></div>
+  </div>
+  <div class="hero-cta">
+    <a class="btn" href="https://byhand.ai/watermarking" target="_blank" rel="noopener">Get the Excel workbook</a>
+    <a class="btn ghost" href="https://www.nature.com/articles/s41586-024-08025-4" target="_blank" rel="noopener">SynthID-Text paper (Nature)</a>
+    <a class="btn ghost" href="transcript.txt" download>Download transcript</a>
+  </div>
+</div></section>
+
+<main class="wrap">
+
+<!-- WALKTHROUGH -->
+<div class="panel active" id="panel-walk">
+
+<div class="step">
+  <div class="step-head"><div class="step-num">1</div><h2>What is watermarking?</h2></div>
+  <p>Watermarking creates a <b>subtle, hidden pattern</b> inside AI-generated content through the model's own token choices - no special characters, nothing visible, and no change to the meaning of the text. The pattern is invisible to a human reader but can be <b>detected later by an algorithm</b> to check whether a piece of text was AI-generated.</p>
+  <p>Claude's watermarking (which Mohsena noted came out in late August) is based on <span class="term" data-tip="Google DeepMind's production text-watermarking scheme, published in Nature (Oct 2024) and used in Gemini. It modifies only the sampling step, not the model itself.">SynthID-Text</span>, Google DeepMind's scheme published in Nature. With rules like the EU AI Act pushing for AI-content transparency, detectable generation is becoming a real product requirement.</p>
+  <p class="dim">Tom's framing in chat: "Adding some subtle pattern detectable by machine but not by humans."</p>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">2</div><h2>Why watermarking text is harder than images</h2></div>
+  <p>For images you can tweak a few pixels slightly - the picture looks identical to a person, but a detector sees the pattern. Text gives you no such slack: words are discrete. Change "January" to anything else in <i>"The first month of the year is January"</i> and the sentence is simply wrong.</p>
+  <div class="callout"><b>The three constraints:</b> add nothing visible to the text, don't change its meaning, and still be able to detect the pattern later. The whole scheme is a way to hide information <i>inside the choice of which word comes next</i>, not in extra marks around the words.</div>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">3</div><h2>Recap: how a token is normally generated</h2></div>
+  <p>Mohsena rebuilt the standard generation pipeline in the workbook for the prompt <i>"The teacher was really ___"</i>:</p>
+  <ul>
+    <li><b>Tokenization</b> - words become <span class="term" data-tip="Integers that stand for each token in the model's vocabulary. In the workbook: the=40, teacher=3021, was=675, really=9867.">token IDs</span> (the=40, teacher=3021, was=675, really=9867).</li>
+    <li><b>Embedding</b> - each ID becomes a vector (4-dimensional in the workbook, for hand calculation).</li>
+    <li><b>Transformer</b> - processes the vectors and produces an output projection.</li>
+    <li><b>Logits to probabilities</b> - raw scores go through <span class="term" data-tip="Squashes raw scores into probabilities that sum to 1. Because softmax guarantees the sum is 1, the sampling ranges never overlap.">softmax</span>, giving a probability for every word in the (tiny, 6-word) vocabulary.</li>
+    <li><b>Detokenize</b> - the chosen token ID becomes text again.</li>
+  </ul>
+  <table class="dt">
+    <tr><th>Candidate word</th><th>Probability</th></tr>
+    <tr><td>great</td><td>0.15</td></tr>
+    <tr><td>friendly</td><td>0.20</td></tr>
+    <tr><td>helpful</td><td>0.10</td></tr>
+    <tr><td>patient</td><td>0.25</td></tr>
+    <tr><td>kind</td><td>0.08</td></tr>
+    <tr><td>generous</td><td>0.22</td></tr>
+  </table>
+  <p class="dim">This repeats one token at a time until the model emits an end-of-text token.</p>
+  <figure><a href="shots/token-generation.png" target="_blank"><img src="shots/token-generation.png" alt="Workbook section: Regular Token Generation - tokenization, embeddings, transformer, logits, softmax, greedy decoding" loading="lazy"></a><figcaption>The Regular Token Generation sheet: full pipeline from token IDs to softmax probabilities.</figcaption></figure>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">4</div><h2>Greedy decoding vs categorical sampling</h2></div>
+  <p><span class="term" data-tip="Always pick the highest-probability token. Deterministic - same prompt, same answer every time - but repetitive and less creative.">Greedy decoding</span> always takes the top probability: "patient" (0.25) wins every time. Reliable, but always the same answer.</p>
+  <p><span class="term" data-tip="Give each token a slice of the [0,1] range as wide as its probability, draw a random number u, and take whichever token's slice contains u. Tokens show up exactly as often as their probability over many draws.">Categorical sampling</span> instead gives every token a slice of the range from 0 to 1, exactly as wide as its probability: great gets [0, 0.15), friendly [0.15, 0.35), helpful [0.35, 0.45), patient [0.45, 0.70), kind [0.70, 0.78), generous [0.78, 1.0). Draw a random number <code>u</code>; whichever slice it lands in is the next token. <code>u = 0.62</code> picks "patient"; <code>u = 0.35</code> picks "helpful" (lower bound inclusive).</p>
+  <div class="callout"><b>Why this matters:</b> sampling already uses random draws. Watermarking hijacks exactly this step - it adds no new machinery to the model, only a bias in how the draw is used.</div>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">5</div><h2>Watermarking, step 1 - pick candidate tokens</h2></div>
+  <p>Instead of drawing <b>one</b> random number, draw several - the workbook does 4 draws: <code>u1=0.25, u2=0.4, u3=0.6, u4=0.74</code>. Each draw maps to a token through the same probability ranges, producing a set of <span class="term" data-tip="The shortlist of tokens produced by multiple sampling draws at one position. One of them will actually be used - the watermark decides which.">candidate tokens</span>: <b>friendly, helpful, patient, kind</b>.</p>
+  <ul>
+    <li>High-probability tokens appear as candidates more often, because their slices are wider - so the candidates still respect the model's distribution.</li>
+    <li>The number of draws is a design choice (SynthID uses 2<sup>m</sup> candidates for m tournament rounds).</li>
+    <li>The same token can be drawn twice - it then competes against itself and trivially wins that match.</li>
+  </ul>
+  <figure><a href="shots/candidate-tokens.png" target="_blank"><img src="shots/candidate-tokens.png" alt="Workbook section: How Watermarking Works - Selection of Candidate Tokens with four u draws" loading="lazy"></a><figcaption>Four u-draws select the candidate tokens for watermarking.</figcaption></figure>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">6</div><h2>Watermarking, step 2 - build the seed</h2></div>
+  <p>The scheme needs randomness that an authorized detector can reproduce exactly - <span class="term" data-tip="A deterministic procedure that looks random but repeats exactly given the same seed. Workbook demo: start at 10, add 5 each time - 10, 15, 20, 25. Same seed, same sequence, every time.">pseudorandomness</span>: a fixed procedure that looks random but repeats perfectly from the same seed.</p>
+  <p>The <span class="term" data-tip="The input that drives all the pseudorandom scoring: the provider's secret key combined with the tokens that came before the current position.">watermarking seed</span> combines two parts:</p>
+  <ul>
+    <li><b>A secret key</b> - held by the model provider (Anthropic's private key in the Claude case). Nobody else can compute or fake the scores without it. Anthropic plans to expose detection through an API for third parties; it was not yet available at the time of the session.</li>
+    <li><b>The previous tokens</b> - SynthID-Text uses the 4 preceding tokens (a design choice). As generation moves forward, the context window slides and the seed changes for every position.</li>
+  </ul>
+  <div class="callout"><b>Key property:</b> same key + same context + same candidate + same layer always produces the same score. That is what makes cheap detection possible later - no need to re-run the LLM.</div>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">7</div><h2>Watermarking, step 3 - score each candidate with g-functions</h2></div>
+  <p>Each candidate token is scored by <span class="term" data-tip="Pseudorandom scoring functions. Inputs: watermarking seed + candidate token + layer number. Outputs: a g-value (in the workbook, 0 or 1). g1 scores round 1 of the tournament, g2 scores round 2.">pseudorandom functions g</span> - one per tournament layer (g1 for round 1, g2 for round 2, and the two may be entirely different scoring functions). The inputs are the watermarking seed, the candidate token, and the layer number; the output is a <b>g-value</b> (0 or 1 in the workbook's binary version).</p>
+  <table class="dt">
+    <tr><th>Candidate token</th><th>Model probability</th><th>g1</th><th>g2</th></tr>
+    <tr><td>friendly</td><td>0.20</td><td>0</td><td>0</td></tr>
+    <tr><td>helpful</td><td>0.10</td><td>1</td><td>1</td></tr>
+    <tr><td>patient</td><td>0.25</td><td>1</td><td>0</td></tr>
+    <tr><td>kind</td><td>0.08</td><td>1</td><td>0</td></tr>
+  </table>
+  <p class="dim">These values are deterministic for anyone holding the secret key - and pure noise to anyone without it. A g-value says nothing about how good a word is; it is the watermark's hidden vote.</p>
+  <figure><a href="shots/synthid-g.png" target="_blank"><img src="shots/synthid-g.png" alt="Workbook section: SynthID text - pseudorandom functions g mapping seed plus candidate plus layer to g-values" loading="lazy"></a><figcaption>The SynthID-Text sheet: secret key + previous tokens + candidate + layer number, through pseudorandom functions g, produce the g-values.</figcaption></figure>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">8</div><h2>Watermarking, step 4 - tournament sampling</h2></div>
+  <p>The candidates now compete in a knockout <span class="term" data-tip="Candidates pair off and play knockout matches. Each round is scored by that layer's g-function; the higher g-value advances. Ties are broken randomly. The last token standing is the one the model emits.">tournament</span> - Mohsena's metaphor was a World Cup bracket:</p>
+  <ul>
+    <li><b>Round 1 (judged by g1):</b> patient (1) vs helpful (1) - a tie, broken by a random pick: helpful advances. friendly (0) vs kind (1) - kind advances.</li>
+    <li><b>Final (judged by g2):</b> helpful (1) vs kind (0) - <b>helpful wins</b>.</li>
+    <li>The model emits: <i>"The teacher was really <b>helpful</b>."</i></li>
+  </ul>
+  <div class="callout"><b>The watermark's fingerprint:</b> "helpful" had only 0.10 probability - "patient" at 0.25 was the model's favorite. A token with a lower model probability can still win when it carries higher watermark scores. Over a whole text, watermarked output is subtly tilted toward high-g tokens - invisible to read, visible to statistics.</div>
+  <p class="dim">This whole process repeats for every token position, with the seed sliding along the freshly generated context. Watermarking is applied to <i>every</i> decoded token, not just important words.</p>
+  <figure><a href="shots/tournament.png" target="_blank"><img src="shots/tournament.png" alt="Workbook section: Tournament Sampling - first round using g1, winners advancing" loading="lazy"></a><figcaption>Tournament sampling in the workbook: first round using g1, then the final using g2.</figcaption></figure>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">9</div><h2>Does watermarking hurt quality? Entropy decides</h2></div>
+  <p>Only a little - because the candidates themselves come from the model's own probability distribution, so the tournament is choosing among things the model was already willing to say.</p>
+  <ul>
+    <li><b>Low-<span class="term" data-tip="How uncertain the next token is. Low entropy: one obvious continuation ('The Earth moves around the ___'). High entropy: many plausible continuations ('The baby is crying for ___').">entropy</span> text:</b> "The Earth moves around the ___" - "sun" is essentially forced. The watermark has almost no room to act.</li>
+    <li><b>High-entropy text:</b> "The baby is crying for ___" - many plausible continuations, so the tournament has real freedom and the watermark embeds strongly.</li>
+  </ul>
+  <p class="dim">SynthID-Text therefore watermarks fluent, open-ended text most effectively and leaves near-deterministic text mostly untouched.</p>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">10</div><h2>Detection: scoring a suspicious text</h2></div>
+  <p>Detection is deliberately cheap - <b>no LLM re-run</b>, just the seed math. Take a text found in the wild, e.g. <i>"The friendly mentor clearly explains concepts"</i>:</p>
+  <ul>
+    <li>For each position, rebuild the seed: secret key + preceding tokens (2 in the workbook's detection example; a design choice, 4 in SynthID generation).</li>
+    <li>Candidate generation is skipped - <b>the observed token replaces the candidate list</b>. You just score the token that actually appears.</li>
+    <li>Compute g1 and g2 for every observed token, count the <b>bits</b> (how many g-values equal 1), and average: <b>mean g-value = total bits / total g-values</b>.</li>
+    <li>In the workbook example the first sentence scores about <b>0.9 (90%)</b> - far above the <b>60% threshold</b> - so it is flagged as watermarked. Unwatermarked text hovers near random (about 50% with binary g-values and two layers).</li>
+  </ul>
+  <div class="callout"><b>Always statistical, never certain:</b> the result is evidence with a confidence level - a percentage - not a 100% proof that text was or was not AI-generated.</div>
+  <figure><a href="shots/detection.png" target="_blank"><img src="shots/detection.png" alt="Workbook section: How the Watermark is Detected - observed tokens, g1 and g2 values, bits, mean g-value per sentence" loading="lazy"></a><figcaption>The detection sheet: two sentences scored token by token, bits summed into a mean g-value per sentence.</figcaption></figure>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">11</div><h2>Breaking the watermark with a single word</h2></div>
+  <p>The closing demo edited exactly one token: <i>mentor</i> to <i>teacher</i>. Because the seed depends on previous tokens, that one edit cascades - the observed token changes, and the context changes for every following row:</p>
+  <ul>
+    <li>Several g-values flip; the bit count shifts (the change is not always negative - it depends on the g-values involved).</li>
+    <li>The sentence's mean g-value dropped from <b>0.9 to 0.4</b> - below the 60% threshold, so the detector no longer flags it.</li>
+  </ul>
+  <div class="callout"><b>The takeaway:</b> even a small edit can weaken the watermark signal and flip a detection result. Watermarks give statistical evidence about origin - they are not tamper-proof signatures. (Chained LLM paraphrasing destroys them too: asked in chat whether a watermark survives passing text through several models, Mohsena's answer was "mostly, no - it will change.")</div>
+</div>
+
+<div class="step">
+  <div class="step-head"><div class="step-num">12</div><h2>Wrap-up and resources</h2></div>
+  <ul>
+    <li>The whole session was worked live in the Excel workbook <b>CLAUDE_Watermarking</b> - get it at <a href="https://byhand.ai/watermarking" target="_blank" rel="noopener">byhand.ai/watermarking</a>.</li>
+    <li>The underlying scheme: <a href="https://www.nature.com/articles/s41586-024-08025-4" target="_blank" rel="noopener">Scalable watermarking for identifying large language model outputs</a> (SynthID-Text, Nature, Oct 2024) and its <a href="https://github.com/google-deepmind/synthid-text" target="_blank" rel="noopener">open-source code</a>.</li>
+    <li>Companion seminar from the summer: <a href="https://www.byhand.ai/p/library-videos-counting-ai-by-hand-transformer-ops" target="_blank" rel="noopener">Counting Transformer Ops by Hand</a>.</li>
+    <li>This is Mohsena's PhD dissertation topic - translating a hard, current AI concept into familiar metaphors and hand calculation. Her thesis proposal is coming up soon.</li>
+    <li>Tom mentioned the session recording was started late, so the beginning was not captured by the host. These notes cover the full hour from 12:00 AM.</li>
+  </ul>
+  <figure><a href="shots/outline.png" target="_blank"><img src="shots/outline.png" alt="Workbook outline: What is Watermarking, Why Watermarking Text is harder, Regular Token Generation, How Watermarking Works, Detection, Editing" loading="lazy"></a><figcaption>The CLAUDE_Watermarking workbook outline, shared on screen at the start of the session.</figcaption></figure>
+</div>
+
+</div>
+
+<!-- TRANSCRIPT -->
+<div class="panel" id="panel-transcript">
+  <div class="ttoolbar">
+    <button class="btn ghost" id="copyBtn">Copy transcript</button>
+    <a class="btn ghost" href="transcript.txt" download>Download .txt</a>
+    <span class="note">Auto-generated Zoom captions from the live session. Expect recognition errors and some repeated phrases; light cleanup only, no rewriting.</span>
+  </div>
+  <pre class="transcript" id="transcriptBody"><p>No, she doesn&#x27;t say no anymore. Before, I remember last year, she was in, I&#x27;m not sure, let me think about it, but she took on any challenge I threw at her recently. So anyway, so that&#x27;s how it is. So we&#x27;re gonna see. I haven&#x27;t studied this topic that deeply, so I&#x27;m here to learn just like everybody else who&#x27;s here All right.</p>
+<p>So also, I send an email to this link. If you have it, can you give us an indication? Maybe type one in the chat if you have access to the spreadsheet. In the email. Cool.No, she doesn&#x27;t say no anymore.</p>
+<p>In the email. Cool, Michael, you got it. Great. If you have All right. Okay, we&#x27;ll have a good a lot of wine.</p>
+<p>Good to see you, Jim, and good to see Elijah. All right, so we should, we&#x27;ll send it, do you want to take it away? [Mohsena] Yeah, hi In the email. Great. All right, so we should, we&#x27;ll send it, do you want to take it away?</p>
+<p>[Mohsena] Yeah, hi everyone, good morning from my side. All right. And I know it&#x27;s All right. And I know it&#x27;s different times in different All right. And I know it&#x27;s different times in different regions, but All right.</p>
+<p>And I know it&#x27;s different times in different regions, but here it&#x27;s morning. So yeah All right. So yeah, good morning, everyone, for joining the session. And… yeah</p>
+<p>[Mohsena] Yeah, hi everyone, good morning from my side. And yeah, I&#x27;m really happy to present this</p>
+<p>[Mohsena] And yeah, I&#x27;m really happy to present this like concept in spreadsheet or Excel, whatever you say.</p>
+<p>And yeah. [Mohsena] And yeah, I&#x27;m really happy to present this like concept in spreadsheet or Excel, whatever you say. And yeah, if you have the workbook with you, you can just take a quick look with me And start working on it</p>
+<p>[Mohsena] And start working on it, or if you are more interested in just learning, you can just, see the lecture and understand what is happening there. So today we are going to learn about the watermarking Yeah, thanks, Tom, for earning this. So yeah, we are going</p>
+<p>[Mohsena] Yeah, thanks, Tom, for earning this.</p>
+<p>So yeah, we are going to talk about the Claude&#x27;s watermarking which came out, I believe, late August. So, it&#x27;s still relevant and still a newly topic, and we are going to talk about like what is this particular thing means actually like are</p>
+<p>[Mohsena] So, it&#x27;s still relevant and still a newly topic, and we are going to talk about like what is this particular thing means actually like are we coloring something? Are we doing something here differently? And then why watermarking is Harder</p>
+<p>[Mohsena] Harder. And then we are going to talk about like token generation, like we&#x27;ll take a quick recap on that and also like how watermarking works.</p>
+<p>We&#x27;ll take a quick look And then how do we select different types of tokens for watermarking? And does the watermarking actually affect the quality</p>
+<p>[Mohsena] And then how do we select different types of tokens for watermarking? And does the watermarking actually affect the quality of the text? Also, how can we detect that watermark later with our system? And how can we change the watermark?</p>
+<p>So these are the overall outline</p>
+<p>[Mohsena] And how can we change the watermark? So these are the overall outline or overview of today&#x27;s lecture. So you can see the cell number within this sheet. Where can you find a particular topic So let me start a very theoretical overview of what is watermarking. [Mohsena] So let me start a very theoretical overview of what is watermarking.</p>
+<p>Basically, watermarking is not adding any kind of special character, or if you&#x27;re familiar with cryptography, like it&#x27;s not adding or hiding anything in the text</p>
+<p>[Mohsena] Basically, watermarking is not adding any kind of special character, or if you&#x27;re familiar with cryptography, like it&#x27;s not adding or hiding anything in the text like any kind of secret things or any kind of secret characters So, what</p>
+<p>[Mohsena] So, what is watermarking basically doing? So. [Mohsena] So, what is watermarking basically doing? So watermarking means like adding no spatial text or spatial character, or it actually doesn&#x27;t change the meaning of your sentence. So basically.</p>
+<p>[Mohsena] So, what is watermarking basically doing? So basically, watermarking creates Very subtle pattern in the generated content of the LL</p>
+<p>[Mohsena] Very subtle pattern in the generated content of the LLM so that later when we want to separate, like, if this text was generated by LLM or not. [Mohsena] Very subtle pattern in the generated content of the LLM so that later when we want to separate, like, if this text was generated by LLM or not, so we can have some kind of trade-off in that, like, we want to</p>
+<p>[Mohsena] Very subtle pattern in the generated content of the LLM so that later when we want to separate, like, if this text was generated by LLM or not, so we can have some kind of trade-off in that like we want to try to detect that later. So And for these kind of</p>
+<p>[Mohsena] And for these kind of AI generated text, like the pattern can be actually introduced through the model&#x27;s token choices. So which means like our LLM model will choose the next generation of tokens, like next tokens In such a way that there will be some kind of patterns there, so we can identify the pattern behind that</p>
+<p>[Mohsena] In such a way that there will be some kind of patterns there, so we can identify the pattern behind that and try to claim like if it is watermarked or not.</p>
+<p>And watermarking is done without actually noticeably changing the meaning of the text. So yeah, obviously watermarking will change a little bit of</p>
+<p>[Mohsena] In such a way that there will be some kind of patterns there, so we can identify the pattern behind that and try to claim like if it is watermarked or not. So yeah, obviously, watermarking will change a little bit of that like text</p>
+<p>[Mohsena] And watermarking is done without actually noticeably changing the meaning of the text. So yeah, obviously watermarking will change a little bit of that like text, but it will not change the meaning. So the main idea behind watermarking is like we are selecting our next tokens in such a way that</p>
+<p>[Mohsena] So the main idea behind watermarking is like we are selecting our next tokens in such a way that I have some kind of pattern in that.</p>
+<p>So yeah, it&#x27;s a global decision is going forward, like</p>
+<p>[Mohsena] So the main idea behind watermarking is like we are selecting our next tokens in such a way that I have some kind of pattern in that. So yeah, it&#x27;s a global decision is going forward like it&#x27;s the European Act, like people are trying to</p>
+<p>[Mohsena] So yeah, it&#x27;s a global decision is going forward like it&#x27;s the European Act, like people are trying to introduce this watermarking and Claude came with it. And before Claude, this particular mechanization mechanism The watermarking is</p>
+<p>[Mohsena] The watermarking is based on the synthetic text. It was published in a Google DeepMind paper. So yeah.</p>
+<p>[Mohsena] The watermarking is based on the synthetic text. So yeah, we are going to look into that soon too. So that was all about like what is watermarking. So it&#x27;s mainly only Mainly, theoretical thing. So.</p>
+<p>[Mohsena] Mainly, theoretical thing. So, just a moment Yeah, so we are going to talk about why this watermarking is harder with the text. So if you see this example image here, so this is our original image. So</p>
+<p>[Mohsena] Yeah, so we are going to talk about why this watermarking is harder with the text. So this one, if I try to just stretch this a little bit to the screen.</p>
+<p>So this is my original image, and this is the modified image. So Watermarking</p>
+<p>[Mohsena] Watermarking means like you are adding some kind of pattern that can be detected easily later. And that pattern actually that pattern detection will help us tell, like, if it is</p>
+<p>[Mohsena] Watermarking means like you are adding some kind of pattern that can be detected easily later. And that pattern actually that pattern detection will help us tell like if it is watermarked or not. So if you are working with watermarking images, it&#x27;s pretty much easy because you can just change</p>
+<p>[Mohsena] Or you can just tweak the pixels here and there a little bit, and it&#x27;s not visible with open eyes.</p>
+<p>So, if I try to zoom in, so this particular reason with your open eyes, it&#x27;s not visible, but if we want to zoom in, you can see, like, the pixel values have some kind of changes in here</p>
+<p>[Mohsena] So, if you want to watermark images that is much easier than text. So, obviously, this picture was generated by ChatGPT, and I want to give credit for that. So, yeah. And then… but for text, what happens is that, like, for certain kinds of text. [Mohsena] So, if you want to watermark images that is much easier than text.</p>
+<p>So, yeah. And then… but for text, what happens is that, like, for certain kinds of text, if you change a particular word</p>
+<p>[Mohsena] So, yeah. And then… but for text, what happens is that, like, for certain kinds of text, if you change a particular word, the meaning of that sentence will change. So, for example, if I have this sentence here, like the first month of the year is January So that particular word should be generate. You cannot change</p>
+<p>[Mohsena] So that particular word should be generate.</p>
+<p>You cannot change this. So For this type of sentences or like regular sentences, if you change a particular word. [Mohsena] So that particular word should be generate. So For this type of sentences or like regular sentences, if you change a particular word, then the meaning actually changes. So that&#x27;s why it makes harder for the text watermarking.</p>
+<p>So when we are talking</p>
+<p>[Mohsena] For this type of sentences or like regular sentences, if you change a particular word, then the meaning actually changes. So when we are talking about watermarking, the watermarking needs to be done, like. Without adding anything</p>
+<p>[Mohsena] Without adding anything to the text, so you are not adding any specific characters or any specific Symbols to your text or hidden, nothing hidden in that text. And then without changing the meaning of the</p>
+<p>[Mohsena] Without adding anything to the text, so you are not adding any specific characters or any specific Symbols to your text, or nothing hidden in that text. And then without changing the meaning of the sentence.</p>
+<p>So you you have to do the watermarking in such a way, like the</p>
+<p>[Mohsena] Without adding anything to the text, so you are not adding any specific characters or any specific Symbols to your text, or nothing hidden in that text. So you you have to do the watermarking in such a way like the meaning doesn&#x27;t get changed. And</p>
+<p>[Mohsena] Symbols to your text, or nothing hidden in that text. And then you have to be able to detect the watermark later. So you have to have</p>
+<p>[Mohsena] Some kind of mechanism that you are doing the process, and now you you want to find like if the text was watermarked or not.</p>
+<p>So some kind of detection algorithm there. So for understanding the watermarking process, we have to understand that regular token generation. I believe a lot of people here already know about how</p>
+<p>[Mohsena] So for understanding the watermarking process, we have to understand that regular token generation. I believe a lot of people here already know about how transformer works and how the next token joy is generated or next token is generated But we&#x27;ll take a quick recap of like how everything works, so that it&#x27;s easier for us to understand like the whole</p>
+<p>[Mohsena] But we&#x27;ll take a quick recap of like how everything works, so that it&#x27;s easier for us to understand like the whole process. So in case of regular token generation, what happens is that maybe I&#x27;m giving some kind of prompt and the LM is generating</p>
+<p>[Mohsena] But we&#x27;ll take a quick recap of like how everything works, so that it&#x27;s easier for us to understand like the whole process.</p>
+<p>So in case of regular token generation, what happens is that maybe I&#x27;m giving some kind of prompt and the generating a sentence and the LLM is trying to</p>
+<p>[Mohsena] Predict the next token, or select the next token, which will be my next token in the sentence. So what LLM does is like It generates one token at a time to complete the whole sentence. So if we are talking about the greedy decoding approach, which I will explain in</p>
+<p>[Mohsena] It generates one token at a time to complete the whole sentence. So if we are talking about the greedy decoding approach, which I will explain in a bit. So in simple words.</p>
+<p>[Mohsena] It generates one token at a time to complete the whole sentence. So in simple words, this is my input. So these are my inputs and this is my input sentence and these are my input words So this input words</p>
+<p>[Mohsena] So this input words get tokenized here, so I have some kind of token IDs for each of the words, so I get maybe 40 for the word the 3021 for the word teacher, 675 for the word was, and similarly, 98674, really So these token ID</p>
+<p>[Mohsena] So this input words get tokenized here, so I have some kind of token IDs for each of the words, so I get maybe 40 for the word the 3021 for the word teacher, 675 for the word was, and similarly, 98674, really So token IDs or token things actually</p>
+<p>[Mohsena] So token IDs or token things actually gets embedded in a n-dimensional embedding vector. So each token is getting like 4 getting embedded in 4 dimensions So that&#x27;s a design choice, obviously. So I&#x27;m just working here with a simple example.</p>
+<p>So maybe my tokens are represented in</p>
+<p>[Mohsena] So that&#x27;s a design choice, obviously. So maybe my tokens are represented in this example or in this Mod</p>
+<p>[Mohsena] So that&#x27;s a design choice, obviously. So maybe my tokens are represented in this example or in this model is… it&#x27;s just four-dimensional vector embeddings. So all those vector embeddings goes to the transformer, and if transformer is a block</p>
+<p>[Mohsena] model is… it&#x27;s just four-dimensional vector embeddings. So all those vector embeddings goes to the transformer, and if transformer is a block, so that transformer is going to process everything and inside it.</p>
+<p>And then we get some kind of output projection. So it&#x27;s it&#x27;s very high level overview So</p>
+<p>[Mohsena] So we are not going to dive into much details about like how</p>
+<p>[Mohsena] So we are not going to dive into much details about how transform works because that&#x27;s the domain of the transformer topic. So we are going to skip that. So we just know like how this process works. So after that transformer thing, the transformer actually gives some kind of output projection</p>
+<p>[Mohsena] Along the vocabulary it has, so my example may be, so in real world cases, it has thousands of thousands of vocal Ebola rewards.</p>
+<p>But for my case, I am just thinking like I have six vocal</p>
+<p>[Mohsena] Along the vocabulary it has, so my example may be, so in real world cases, it has thousands of thousands of vocal Ebola rewards. But for my case, I am just thinking like I have six words In my vocabulary. So, the transformer will give some kind of logits or raw</p>
+<p>[Mohsena] In my vocabulary. So, the transformer will give some kind of logits or raw scores for each of the words in my vocabulary, like, what can be my next token So these logits actually goes through the softmax function then, so the softmax actually works with this function, and then</p>
+<p>[Mohsena] So these logits actually goes through the softmax function then, so the softmax actually works with this function, and then I kind of generate the probability with the softmax function, so here are the probabilities for the 6 words here</p>
+<p>[Mohsena] I kind of generate the probability with the softmax function, so here are the probabilities for the 6 words here And then when we detokenize that, then we can get like, if you look at here, the maximum probability is this one. So let me do the bolding thing here.</p>
+<p>The maximum</p>
+<p>[Mohsena] And then when we detokenize that, then we can get like, if you look at here, the maximum probability is this one. The maximum probability is patient, so when we detokenize, so I get the patient as next token, so it goes to the</p>
+<p>[Mohsena] The maximum probability is patient, so when we detokenize, so I get the patient as next token, so it goes to this sentence, so the sentence become like the teacher was really patient and This process goes on until it completes the sentence. The end of the text is</p>
+<p>[Mohsena] This process goes on until it completes the sentence. The end of the text is found, and this approach is like, okay, if we have want to have a similar kind of output. So what does that mean?</p>
+<p>So this is the greedy decoding thing comes Like, it&#x27;s very greedy. [Mohsena] This process goes on until it completes the sentence. So this is the greedy decoding thing comes Like, it&#x27;s very greedy, like, it&#x27;s always trying to maximize things</p>
+<p>[Mohsena] Like, it&#x27;s very greedy, like, it&#x27;s always trying to maximize things, so I just took the maximum probability of all the probabilities. So, if you take the maximum probability always, so what happens is that if you give the input like this, like, the teacher was really Then the sentence will always try to pick up this</p>
+<p>[Mohsena] Then the sentence will always try to pick up this word, the maximum probability word, patient. So that way we can have some kind of deterministic output every time.</p>
+<p>It&#x27;s not any variation in the sentence, so The, sent</p>
+<p>[Mohsena] Then the sentence will always try to pick up this word, the maximum probability word, patient. It&#x27;s not any variation in the sentence, so The sentences generated by this approach will be very much deterministic rather than</p>
+<p>[Mohsena] The sentences generated by this approach will be very much deterministic rather than more like, I would say. [Mohsena] The sentences generated by this approach will be very much deterministic rather than more like, I would say, creative. So then we can follow, like the researchers came up with another sampling process, like another process which can help introduce variation in</p>
+<p>[Mohsena] So then we can follow, like the researchers came up with another sampling process, like another process which can help introduce variation in your sentence. So what do I mean by that?</p>
+<p>So this, if you remember, like, these are my vocabulary words, so these are my vocabulary words And these are my probability for those words, so these are my</p>
+<p>[Mohsena] And these are my probability for those words, so these are my probability for those words. So in the previous approach, we just took the same maximum probability. But in this approach, like the category sampling one, so we will try to do a random draw And then and then we will try</p>
+<p>[Mohsena] And then and then we will try to find</p>
+<p>[Mohsena] And then and then we will try to, find, like, which token falls</p>
+<p>[Mohsena] And then and then we will try to find like which token falls into that range. So yeah. If you see, like.</p>
+<p>[Mohsena] And then and then we will try to find like which token falls into that range. So yeah. If you see, like, this is my lower bound and upper bound for this range. So why we are doing this, we will see. So the lower bound is inclusive.</p>
+<p>So take, let&#x27;s take a look. So my probability</p>
+<p>[Mohsena] If you see, like, this is my lower bound and upper bound for this range. So my probability is 0.15 for this particular token. So that means it starts with 0 and ends at 0.1</p>
+<p>[Mohsena] 0.15. And for the word friendly, it starts with this one from this one And then it gets added to the probability, so if you… if this is kind of simply an idea, like if you have a number line, then how much this range actually occupies those particular to</p>
+<p>[Mohsena] And then it gets added to the probability, so if you… if this is kind of simply an idea, like if you have a number line, then how much this range actually occupies those particular tokens?</p>
+<p>So you can think of like that So let me draw</p>
+<p>[Mohsena] So let me draw here a little bit. So this basically means, like, if you have</p>
+<p>[Mohsena] So let me draw here a little bit. So this basically means like if you have a particular number line, so it starts with 0. So from 0 to 0.15. So let me take just 0.15.</p>
+<p>So in this range, the token actually falls here is great. And then</p>
+<p>[Mohsena] token actually falls here is great. And then from 0.15 to maybe 0.35, we are getting the token as Friendly. So, this is the ranges of those tokens. So Let me calculate the lower bounds here</p>
+<p>[Mohsena] Friendly.</p>
+<p>So Let me calculate the lower bounds here, and these are the upper bounds for me So yeah. [Mohsena] Friendly. So Let me calculate the lower bounds here, and these are the upper bounds for me So yeah, the whole process actually starts with zero and the probability ends at none 1, which is pretty straightforward</p>
+<p>[Mohsena] Let me calculate the lower bounds here, and these are the upper bounds for me So yeah, the whole process actually starts with zero and the probability ends at none 1, which is pretty straightforward. And now what happens is that we kind of Add some kind</p>
+<p>[Mohsena] So yeah, the whole process actually starts with zero and the probability ends at none 1, which is pretty straightforward. And now what happens is that we kind of Add some kind of randomness in the process, or what do I mean by that?</p>
+<p>So</p>
+<p>[Mohsena] Add some kind of randomness in the process, or what do I mean by that? So suppose you have a random card draw there and you pick a card and you actually get some kind of information there or data there So, with my random draw, so throughout my lecture, I will</p>
+<p>[Mohsena] So, with my random draw, so throughout my lecture, I will refer to the random draws as u&#x27;s. So my random draw. [Mohsena] So, with my random draw, so throughout my lecture, I will refer to the random draws as u&#x27;s. So my random draw u is 0.62, for example.</p>
+<p>So when you draw a random number, it&#x27;s 0.6 So we need to find out, like, which</p>
+<p>[Mohsena] So we need to find out, like, which range it falls. So here is the formula you can work with that. Like if you want to try to formalize things. So. [Mohsena] So we need to find out, like, which range it falls.</p>
+<p>So, let me take the black color here. So that it is visible. So I have put</p>
+<p>[Mohsena] try to formalize things. So I have put it in a gray color or lighter color so that you can think of that, the formula, how does it</p>
+<p>[Mohsena] try to formalize things. So I have put it in a gray color or lighter color so that you can think of that the formula, how does it work?</p>
+<p>So yeah, this is the formula and this is the representation like why what each of the notion means here</p>
+<p>[Mohsena] So that it is visible. So yeah, this is the formula and this is the representation like why what each of the notion means here So. [Mohsena] So that it is visible. So yeah, this is the formula and this is the representation like why what each of the notion means here So you can see that, like. [Mohsena] So that it is visible.</p>
+<p>So yeah, this is the formula and this is the representation like why what each of the notion means here So you can see that like it starts with</p>
+<p>[Mohsena] So you can see that like it starts with A2 to A7. So this is the basically the token range. So my A2 to A7 will be this range. And then we have we are matching some kind of token with some kind of values. So these are my u values</p>
+<p>[Mohsena] So you can see that like it starts with A2 to A7.</p>
+<p>So these are my U value which is 0.6</p>
+<p>[Mohsena] And then this is the lower bound of the tokens. So these are the lower bounds. So this will be this one and this is the upper bound of the tokens. So it&#x27;s just checking like which range it falls through and falls in between and selects the token there. So let us just simply copy the formula from here</p>
+<p>[Mohsena] And then paste it and change the cells, so this is my token range.</p>
+<p>As I said earlier. So this one is my token range, and this is my U value This G9 should be the CU value and also this G9 should be this u value. This should be my token lower bound</p>
+<p>[Mohsena] This G9 should be the CU value and also this G9 should be this u value. This should be my token lower bound And this should be my token upper bound So this one So, you can see, like, with this random</p>
+<p>[Mohsena] And this should be my token upper bound So this one So, you can see, like, with this random draw of you, I get, I select, like, the token patient is getting selected. So this one.</p>
+<p>So yeah. [Mohsena] And this should be my token upper bound So this one So, you can see, like, with this random draw of you, I get, I select, like, the token patient is getting selected. So this one. So yeah, it, the model can select this one. So what</p>
+<p>[Mohsena] So this one So, you can see, like, with this random draw of you, I get, I select, like, the token patient is getting selected.</p>
+<p>So this one. So what if you becomes like 0.35? Then what do we take the lower bound or the upper bound As I</p>
+<p>[Mohsena] As I said, the lower bound is inclusive. So 4. [Mohsena] As I said, the lower bound is inclusive.</p>
+<p>So for 0.35, we will get the token helpful. So you kind of copy the similar formula here and fix the ranges there. So I&#x27;m just Replacing everything here, you can fix the change with the dollar sign, but I&#x27;m just</p>
+<p>[Mohsena] Replacing everything here, you can fix the change with the dollar sign, but I&#x27;m just Yeah, so this process is fine. The lower bound should be this and the upper bound should be This one. So yeah, you can see the helpful token gets selected.</p>
+<p>So this is the</p>
+<p>[Mohsena] Yeah, so this process is fine. So this is the sampling approach which is called categorical sampling. So with this sampling approach, we are actually having some kind</p>
+<p>[Mohsena] This one. So with this sampling approach, we are actually having some kind of Probability variations there with the random draws, so yeah, we are doing some kind</p>
+<p>[Mohsena] Probability variations there with the random draws, so yeah, we are doing some kind of random things to, to introduce some variation in our text generation. We are not just deterministic with the, like the previous approach, the greedy decoding approach.</p>
+<p>So what happens like for watermarking, we have to understand this sampling process very well, because that&#x27;s the main</p>
+<p>[Mohsena] So what happens like for watermarking, we have to understand this sampling process very well, because that&#x27;s the main place where watermarking actually shows its significance So, yeah, how</p>
+<p>[Mohsena] So what happens like for watermarking, we have to understand this sampling process very well, because that&#x27;s the main place where watermarking actually shows its significance So yeah, how this watermarking works? So for example. [Mohsena] So yeah, how this watermarking works? If we are working with any kind of sentence, so and we are just generating a regular token, so we draw a sample, a random draw of you, right? So what happens, like, for example.</p>
+<p>[Mohsena] So yeah, how this watermarking works? So for example. So what happens, like, for example, if I take 4 draws of you So</p>
+<p>[Mohsena] If we are working with any kind of sentence, so and we are just generating a regular token, so we draw a sample, a random draw of you, right? So what happens, like, for example, if I take 4 draws of you So that becomes my candidate token. So why for?</p>
+<p>Because it&#x27;s</p>
+<p>[Mohsena] So that becomes my candidate token. So why for? Because it&#x27;s your design choice. You can work with different types, different numbers of tokens as your design choice for the watermarking process for the for generating the candidate tokens. So what do I mean by candidate tokens?</p>
+<p>I will talk about It&#x27;s more. But yeah. [Mohsena] It&#x27;s more. But yeah, let&#x27;s understand the process first. So I am just simply drawing some random draws, like 4 random draws of you.</p>
+<p>So these are like 0.25, 0.4, 0.6, 0.74. So yeah, you similarly can use this formula here to fill up the cells. I&#x27;m just taking A quick route here</p>
+<p>[Mohsena] A quick route here to save some time. So. [Mohsena] A quick route here to save some time.</p>
+<p>So, my first U1 is 2.25, which is, like, this 0.25 range falls into the patient word patient token. So I&#x27;ll just simply write here patient And then this for U2, which is 0.4, the 0.4 range falls in this one</p>
+<p>[Mohsena] And then this for U2, which is 0.4, the 0.4 range falls in this one, 0.35 to 0.45, so which is basically helpful. So this one is helpful And then, U3 is 0.6. So 0.6 falls in this range particular. So patient, yeah, so 0.</p>
+<p>[Mohsena] And then, U3 is 0.6. So patient, yeah, so 0.6 falls in patient. Sorry for the first one. It&#x27;s 0.25. So we have to look at the range So this is friendly.</p>
+<p>Sorry, I took the model probability here</p>
+<p>[Mohsena] So this is friendly. So we have to look at the range. So 0.15 to 0.35. And 0.25 falls in between. So this is friendly, actually not patient.</p>
+<p>And then for U3, we have 0.6 So, 0.6 means in this range, like</p>
+<p>[Mohsena] So, 0.6 means in this range, like 0.45 to 0.7, which is patient, so let&#x27;s take the word patient here And then 4.74, so 0.74 falls in this range, which is kind. So kind. So you can see that these four tokens are getting are getting</p>
+<p>[Mohsena] And then 4.74, so 0.74 falls in this range, which is kind. So kind. So you can see that these four tokens are getting are getting selected as the candidate tokens.</p>
+<p>So what do we mean by candidate tokens? So Watermarking is basically doing some kind of</p>
+<p>[Mohsena] Watermarking is basically doing some kind of selection among the candidate tokens. So I have four candidate tokens here, and my vocabulary had like</p>
+<p>[Mohsena] Watermarking is basically doing some kind of selection among the candidate tokens. So I have four candidate tokens here and my vocabulary had like six tokens here, if you remember. So these 6</p>
+<p>[Mohsena] Watermarking is basically doing some kind of selection among the candidate tokens.</p>
+<p>So these six tokens are in my vocabulary So I&#x27;m just, taking 4 tokens. Among those 6</p>
+<p>[Mohsena] So I&#x27;m just, taking 4 tokens. Among those 6 tokens as candidate tokens. So the watermarking process will continue with these 4 tokens rather than the 6 tokens. So that&#x27;s how we get the candidate tokens So that was before the watermarking process.</p>
+<p>So the watermarking thing basically starts from here. So</p>
+<p>[Mohsena] So that was before the watermarking process. So There are all those things</p>
+<p>[Mohsena] So that was before the watermarking process. So All those things we learned till now, it was just the background knowledge needed for understanding watermarking process. So watermarking starts from here.</p>
+<p>So Basically, what we do in watermarking</p>
+<p>[Mohsena] All those things we learned till now, it was just the background knowledge needed for understanding watermarking process. So Basically, what we do in watermarking is like we start with some kind of a random seed, and basically we actually follow a special mathematical process to generate</p>
+<p>[Mohsena] Basically, what we do in watermarking is like we start with some kind of a random seed, and basically we actually follow a special mathematical process to generate the next tokens. So if you see the theoretical context written here If we start with a seed and follow</p>
+<p>[Mohsena] If we start with a seed and follow a fixed mathematical procedure to generate numbers, that may look random, but basically they are pseudorandom. So why we are talking about pseudorandomness? So pseudorandom means it looks random, but it is kind of deterministic randomness.</p>
+<p>We are talking about seed</p>
+<p>[Mohsena] We are talking about seed, right? So seed is the starting point. So if I tell you, like. [Mohsena] We are talking about seed, right? So if I tell you, like, yeah, I want to start with the number 10, and I want to follow a fixed mathematical pattern, which is, like, I would… I can say, like, I… I Add a 5 interval every time.</p>
+<p>So I start with 10, and then we add 5. So</p>
+<p>[Mohsena] Add a 5 interval every time. So The process should be 15, 20, 25. So if you know that, yeah. [Mohsena] Add a 5 interval every time.</p>
+<p>So if you know that, yeah, that was my seed, the first initial point, and this is the mathematical procedure I followed to generate some random numbers So that it gets deterministic. [Mohsena] The process should be 15, 20, 25. Like, though the numbers look random. [Mohsena] The process should be 15, 20, 25. Like, though the numbers look random, but it&#x27;s actually reproducible</p>
+<p>[Mohsena] So that it gets deterministic.</p>
+<p>Like, though the numbers look random, but it&#x27;s actually reproducible So pseudorandomness actually means, like. [Mohsena] So that it gets deterministic. Like, though the numbers look random, but it&#x27;s actually reproducible So pseudorandomness actually means, like, with the same sort of values, as I said, like with the starting seed and with the mathematical procedure, the number sequence is</p>
+<p>[Mohsena] So pseudorandomness actually means, like, with the same sort of values, as I said, like with the starting seed and with the mathematical procedure, the number sequence is reproducible. And if you are very familiar with low level calculations, so you you kind of know that in in terms of logic and in terms of</p>
+<p>[Mohsena] Computer things, like, nothing is</p>
+<p>[Mohsena] computer things, like, nothing is actually purely random. So it has some kind of algorithm behind that.</p>
+<p>So the randomness is, pseudorandom So yeah, what is a seed? So seed is basically the very basic starting point so that reproducible</p>
+<p>[Mohsena] So yeah, what is a seed? So seed is basically the very basic starting point so that reproducible random sequence can be pseudo random sequence can be generated. So the very basic thing for watermarking, understanding the seed, like how it works. [Mohsena] So the very basic thing for watermarking, understanding the seed, like how it works.</p>
+<p>Anthrop… so watermar</p>
+<p>[Mohsena] So the very basic thing for watermarking, understanding the seed, like how it works. So watermarking has a special kind of seed. So what kind of seed we are talking about? Very in very basic</p>
+<p>[Mohsena] So the very basic thing for watermarking, understanding the seed, like how it works. In very basic things.</p>
+<p>Anthropic launched this watermarking process</p>
+<p>[Mohsena] So watermarking has a special kind of seed. But like Anthropic is working this with this watermarking process and Anthropic has a secret key. So let me write here. [Mohsena] In very basic things. So this secret key is not available to public.</p>
+<p>So I believe up until now the knowledge I have so</p>
+<p>[Mohsena] Anthropic is trying to, planning to share</p>
+<p>[Mohsena] Anthropic is trying to planning to share the secret key through an API to some third parties or vendors. So that is not yet available. So Anthropic is working with a secret key that is only known to Anthropic So what happens is that anthropic takes the secret key</p>
+<p>[Mohsena] So what happens is that anthropic takes the secret key And along with that secret key, it takes some kind of the previous tokens And then it actually creates the watermarking seed. So this is my</p>
+<p>[Mohsena] And along with that secret key, it takes some kind of the previous tokens And then it actually creates the watermarking seed. So this is my watermarking site.</p>
+<p>We are talking about the regular seed, the starting point. So the watermarking seed actually, it takes the secret key from Anthropic</p>
+<p>[Mohsena] And then it actually creates the watermarking seed. So the watermarking seed actually, it takes the secret key from Anthropic, and then the previous tokens of your text. So how many previous tokens it is basically a design choice. But as I said, this</p>
+<p>[Mohsena] So this is my watermarking site.</p>
+<p>But as I said, this Particular text generation method was</p>
+<p>[Mohsena] Particular text generation method was introduced by a Google DeepMind paper synthetic text. So in that paper, they actually used four previous tokens. So it&#x27;s basically your design choice like how much previous tokens you want for your watermarking seed. So basically, the idea is that Anthropic takes the secret key and you have some kind of</p>
+<p>[Mohsena] You take 4 tokens there, so those 4 tokens along with your secret key generates a combination of numbers, which is used as the watermarking sale So, let&#x27;s move on to the, synth ID text mechanism. So</p>
+<p>[Mohsena] So, let&#x27;s move on to the, synth ID text mechanism.</p>
+<p>So how it works. So for SynthID</p>
+<p>[Mohsena] So, let&#x27;s move on to the, synth ID text mechanism. So for synth ID text generation method. [Mohsena] So, let&#x27;s move on to the, synth ID text mechanism. So for synth ID text generation method, we also introduce Some random functions.</p>
+<p>So Remember, the most important thing for watermarking is</p>
+<p>[Mohsena] Some random functions. So Remember, the most important thing for watermarking is the watermarking seed, which develops on the secret key and the combination of the previous tokens So now we have the watermarking saved. What we do, we actually again work with some pseudorandom functions. So before we were working with some pseudorandom seed</p>
+<p>[Mohsena] Remember, the most important thing for watermarking is the watermarking seed, which develops on the secret key and the combination of the previous tokens So now we have the watermarking saved. So before we were working with some pseudorandom seed And now we will work with like pseudorandom functions.</p>
+<p>[Mohsena] So now we have the watermarking saved. So what happens again? The secret key, we take the secret key, we take the previous tokens. So this is basically the</p>
+<p>[Mohsena] And now we will work with like pseudorandom functions. So this is basically the combination of so let me merge these things.</p>
+<p>So this is basically the watermarking seed we are talking about. So this is the watermarking seed And then</p>
+<p>[Mohsena] And then this one is our These are our candidate tokens. So these are our candidate tokens And this is the layer number. So what do we mean by the layer number? So if we move forward a little bit, you will see that these are my candidate tokens, right?</p>
+<p>So you can</p>
+<p>[Mohsena] These are our candidate tokens. So you can see like watermarking we try to select tokens based on</p>
+<p>[Mohsena] And this is the layer number. So you can see like watermarking we try to select tokens based on some kind of knockout matches. So if you are very much into soccer or football</p>
+<p>[Mohsena] So if we move forward a little bit, you will see that these are my candidate tokens, right? So if you are very much into soccer or football, you know.</p>
+<p>We had a World Cup in</p>
+<p>[Mohsena] We had a World Cup in World Cup recently, right. [Mohsena] We had a World Cup in World Cup recently, right, so those</p>
+<p>[Mohsena] We had a World Cup in World Cup recently, right? So those soccer World Cup matches, you know, like in some stages, we have some kind of knockout matches. I believe the second stage has some kind of knockout match matches. So each group actually takes part like with the opponent And one party wins, one party just leaves the match.</p>
+<p>So</p>
+<p>[Mohsena] And one party wins, one party just leaves the match. So that&#x27;s the main procedure in this synth ID text generation, which is called tournament sampling. So we will move into the tournament sampling a bit In a bit short, later. for those</p>
+<p>[Mohsena] In a bit short, later. for those tournament sampling to take place like there will be different round of matches.</p>
+<p>So those different round actually represents the layer numbers. So if I am doing the 1st round of matches The layer number is one. If I&#x27;m doing the second round of matches between the candidate tokens</p>
+<p>[Mohsena] The layer number is one. If I&#x27;m doing the second round of matches between the candidate tokens, the layer number is 2. So again, we have the watermarking seed here.</p>
+<p>So we pass the watermarking seed along with my candidate token. So these are my candidate tokens which were actually generated through the random draws of you and then I</p>
+<p>[Mohsena] through the random draws of you and then I provide the layer number, which is like the round number of the matches</p>
+<p>[Mohsena] through the random draws of you and then I provide the layer number which is like the round number of the matches. And then we pass it through some pseudorandom functions or scoring functions, I would say. So this scoring functions is again very Dense mathematical functions. So for simplicity, we will</p>
+<p>[Mohsena] Dense mathematical functions.</p>
+<p>So for simplicity, we will just use those as G here. So we will pass those information to the pseudorandom functions and these functions will generate some values for me. So these are called G values. So these are like another important thing for our approach today So if you think</p>
+<p>[Mohsena] So if you think like which information are very much critical for me. So watermarking.</p>
+<p>So if the secret key changes, the watermarking seed changes, and the combination of the information changes and the G values will also change. Again, if my set of candidate tokens change Then again, I have the change in G values. If my</p>
+<p>[Mohsena] Then again, I have the change in G values. If my previous tokens change, I again have some kind of effect in the G values. And again, if the layer number change, like.</p>
+<p>[Mohsena] Then again, I have the change in G values. And again, if the layer number change, like I am not working with layer number 1, I am working with layer number 2, then actually G values also change. So a lot of things are going in here. So</p>
+<p>[Mohsena] If anything changes, the G values change. So the G1, G1, these values G1 is basically the watermarking score or the scoring functions value for the first layer.</p>
+<p>So this is for the first layer and the watermarking for the second layer is G2. And You don&#x27;t have to, like, you don&#x27;t have to use the same</p>
+<p>[Mohsena] You don&#x27;t have to, like, you don&#x27;t have to use the same random functions for G1 and G2. For G1, you can use a different function. For G2, you can use like a different scoring function. So think of like similarity, like if you are working, if you have worked with any kind of clusters So maybe for</p>
+<p>[Mohsena] So maybe for G1, you can use like similarity function.</p>
+<p>[Mohsena] So maybe for G1, you can use like similarity function, a specific simulator function, maybe Euclidean function, and for G2, maybe you can use another distance function. So these are the different scoring functions. So yeah, these are my candidate tokens, and this suppose that G1 and G2 values for this</p>
+<p>[Mohsena] And also, like. [Mohsena] And also like this We have to find the model probabilities from there, so what do we mean by the model probabilities? So this is very important.</p>
+<p>The model probabilities are basically generated by the first step of the LLM, like this one. So these are my model probabilities</p>
+<p>[Mohsena] We have to find the model probabilities from there, so what do we mean by the model probabilities? So I have 0.2 for the friendly word so these are my model prob</p>
+<p>[Mohsena] 0.2 for the friendly word so these are my model probability for friendly Helpful for point 1 and then patient 0.25 and kind 0.08. If you have some kind of idea in your mind, like, if I am doing these things, like lots of randomness in the text, tokens</p>
+<p>[Mohsena] 0.2 for the friendly word so these are my model probability for friendly Helpful for point 1 and then patient 0.25 and kind 0.08. If you have some kind of idea in your mind, like, if I am doing these things, like lots of randomness in the text tokens and stuff, then</p>
+<p>[Mohsena] Helpful for point 1 and then patient 0.25 and kind 0.08.</p>
+<p>If you have some kind of idea in your mind, like, if I am doing these things, like lots of randomness in the text tokens and stuff, then should it not like affect my quality of the output if I&#x27;m using water</p>
+<p>[Mohsena] If you have some kind of idea in your mind, like, if I am doing these things, like lots of randomness in the text tokens and stuff, then should it not like affect my quality of the output if I&#x27;m using watermarking No, because, like, it will affect a little bit, but not that much, because, yeah. [Mohsena] No, because, like, it will affect a little bit, but not that much, because, yeah, that randomness is also using the model probability. Like, I have G1, G2 values which which is generated through some kind of zero randomness. But this model probability, it is generated by the Llm. So we are also using the model probability.</p>
+<p>We just simply Don&#x27;t</p>
+<p>[Mohsena] Don&#x27;t discard the values. And if you remember, this model probability was drawn by the random draws of you So, yeah, these are very important information for now. Like, this step, up until now, we used a lot of things there. So now we will take it from this table. [Mohsena] So, yeah, these are very important information for now.</p>
+<p>So now it&#x27;s pretty much straightforward, so we will do tournament sampling. So what do we mean by tournament sampling So along these candidate to</p>
+<p>[Mohsena] So along these candidate tokens, these 4 candidate tokens, you can have 8 and other different dimensions. It&#x27;s basically 2 to the power M. So Now, with the candidate tokens, what we do is like we kind of arrange some matches between the tokens. So maybe I can randomly pick friendly and randomly</p>
+<p>[Mohsena] Now, with the candidate tokens, what we do is like we kind of arrange some matches between the tokens.</p>
+<p>So maybe I can randomly pick friendly and randomly pick patient and I can arrange a match between them. So yeah, these are my tokens and these are my G1, G2 values. So I&#x27;m just simply copying this</p>
+<p>[Mohsena] It&#x27;s for the friendly word, which is G1 0. And then for helpful, it&#x27;s 1111. And then for friendly… for G2, it</p>
+<p>[Mohsena] It&#x27;s for the friendly word, which is G1 0.</p>
+<p>And then for friendly for G2, it&#x27;s simply this one. So 0100. I&#x27;m just going to drag this one So 0100, so these are my tokens values here. So these tournament sampl</p>
+<p>[Mohsena] So 0100, so these are my tokens values here. So these tournament sampling will take place with those G1 and G2 values.</p>
+<p>So this is my first round. So I am doing 1st round. I have 4 candidates. So in the first round there can be 2 matches, because I have 4 participants there So these candidates are taken randomly</p>
+<p>[Mohsena] So these candidates are taken randomly, selected randomly with the algorithm mechanism. So maybe my first pair of candidates selected randomly is the first one, patient, and the second one is helpful.</p>
+<p>So I take these 2 for the first match And I kind of Consider the G1 value. So</p>
+<p>[Mohsena] And I kind of Consider the G1 value. So the G1 value for the word patient is this one and G1 value for the word helpful is this one. So yeah, and then I take friendly and kind and then arrange a match between these two. [Mohsena] Consider the G1 value.</p>
+<p>So for friendly. [Mohsena] So yeah, and then I take friendly and kind and then arrange a match between these two. So for friendly, it is the G1 value is this one for kind, the G1 value is this one. So see, we are just using G1 for the first round</p>
+<p>[Mohsena] So for friendly, it is the G1 value is this one for kind, the G1 value is this one. So that round actually means the layer number.</p>
+<p>So this is the first layer or the first round we are working with. So we take the G1.MASo If I doMASo if I do the, matchMASo if I do the match here between these 2 tokens.MASo if I do the match here between these 2 tokens, you can see that they have equal values. So any token can be generated randomly from here. So, for example.MASo if I do the match here between these 2 tokens, you can see that they have equal values. So, for example, maybe we will take, like, helpful, maybeMASo if I do the match here between these 2 tokens, you can see that they have equal values.</p>
+<p>So, for example, maybe we will take, like, helpful maybe I&#x27;m not sure. You can take the patient also</p>
+<p>[Mohsena] if I do the match here between these 2 tokens, you can see that they have equal values. You can take the patient also Like, it&#x27;s it&#x27;s</p>
+<p>[Mohsena] Like, it&#x27;s it&#x27;s generated randomly if the G values are same. So the model can either pick patient or either can pick helpful. So for this one, this particular combination, you can see like</p>
+<p>[Mohsena] Like it&#x27;s generated randomly if the G values are same.</p>
+<p>So for this one, this particular combination, you can see like the friendly and kind, it&#x27;s Friendly has G1 value of 0 and kind has G1 value of 1. So kind wins</p>
+<p>[Mohsena] Friendly has G1 value of 0 and kind has G1 value of 1. So kind wins from here. So again, you can use some formulas here. I&#x27;m just taking the short route So here you can see like winner is chosen randomly if they have the same G values.</p>
+<p>So the work of G one</p>
+<p>[Mohsena] Friendly has G1 value of 0 and kind has G1 value of 1. So the work of G1 is done in here. So now for the</p>
+<p>[Mohsena] So here you can see like winner is chosen randomly if they have the same G values. So now for the second round, we will use the G2 values. So for the second round, we take the winners from the first round and arrange a match again So this is my winner from the first round.</p>
+<p>We used some kind of form</p>
+<p>[Mohsena] So this is my winner from the first round. We used some kind of formulas to fill this cell. So this is helpful and this is kind. So for helpful, the G2 value is This one, again. [Mohsena] So this is my winner from the first round.</p>
+<p>So for helpful, the G2 value is This one, again, you can use the exact formula like token matching and the G2 value finding. I&#x27;m just taking the</p>
+<p>[Mohsena] This one, again, you can use the exact formula like token matching and the G2 value finding. I&#x27;m just taking the short route. So for kind, it&#x27;s this value. So you see like for helpful, it&#x27;s one and for kind.</p>
+<p>At 0. So then this match happens, and as helpful</p>
+<p>[Mohsena] At 0. So then this match happens, and as helpful as the one value, then helpful actually wins. So this is my winner token. So the next token for this particular sentence will become something like this.</p>
+<p>The teacher was really Helpful. So that&#x27;s how the token generation works</p>
+<p>[Mohsena] Helpful. So that&#x27;s how the token generation works in watermarking. So that&#x27;s the main thing. Like watermarking is generating tokens in such a way that it can have a certain pattern So it just it adds a lot of randomness in there, but it is also using the model probabilities so that</p>
+<p>[Mohsena] So it just it adds a lot of randomness in there, but it is also using the model probabilities so that like it</p>
+<p>[Mohsena] So it just it adds a lot of randomness in there, but it is also using the model probabilities so that it doesn&#x27;t change the quality of the sentences too much So, yeah.</p>
+<p>And now what happens is that, like, here are some</p>
+<p>[Mohsena] So, yeah. And now what happens is that, like, here are some theoretical context. So the initial tournament participants are sampled according to the model probabilities. So if you remember, like, these were my candidate tokens or the initial tournament candidates or participants. So these</p>
+<p>[Mohsena] And now what happens is that, like, here are some theoretical context.</p>
+<p>So these tournament participants were select</p>
+<p>[Mohsena] candidates or participants. So these tournament participants were selected by the random draw of you. So the random draw of you and those were from the taken from the LLM model probabilities. We take the LLM model probabilities, we draw some random values, and</p>
+<p>[Mohsena] We take the LLM model probabilities, we draw some random values, and we take the candidate tokens. So these model probabilities were used to select those candidate tokens.</p>
+<p>So that&#x27;s when our Llm model probabilities actually has a significance. And then when the tournament begins, G1 actually determines 1st round of winners, and G2 determines</p>
+<p>[Mohsena] We take the LLM model probabilities, we draw some random values, and we take the candidate tokens. And then when the tournament begins, G1 actually determines first round of winners, and G2 determines the second round of winners</p>
+<p>[Mohsena] And then when the tournament begins, G1 actually determines first round of winners, and G2 determines the second round of winners. And yeah, G. 1 and G.</p>
+<p>2 might have some kind of different values. But for simplicity, we&#x27;ll assume that it&#x27;s either 0 or And then, so that&#x27;s the main difference. Like as</p>
+<p>[Mohsena] And then when the tournament begins, G1 actually determines first round of winners, and G2 determines the second round of winners. And yeah, G. 1 and G.</p>
+<p>But for simplicity, we&#x27;ll assume that it&#x27;s either 0 or And then, so that&#x27;s the main difference like as I said earlier, a to</p>
+<p>[Mohsena] And then, so that&#x27;s the main difference like as I said earlier, a token with a lower probability can still win the tournament if it receives higher watermark scores. So you can see like our tournament winner is helpful, but if we check, this helpful has</p>
+<p>[Mohsena] So you can see like our tournament winner is helpful, but if we check, this helpful has very much lower probability than the other tokens. So it&#x27;s the third token, third top token for the model probability So you can see like if we took the maximum approach</p>
+<p>[Mohsena] So you can see like if we took the maximum approach, maybe we could select like patient But we, with the watermark sampling process, we are actually taking the token like helpful</p>
+<p>[Mohsena] So you can see like if we took the maximum approach, maybe we could select like patient But the watermark sampling process, we are actually taking the token like helpful, though it has a lower kind of model probability So it receives a higher watermarking scores</p>
+<p>[Mohsena] But the watermark sampling process, we are actually taking the token like helpful, though it has a lower kind of model probability So it receives a higher watermarking scores. So it basically depends on G1 and G2 and the random seed watermarking seed and other stats. So another thing</p>
+<p>[Mohsena] So it receives a higher watermarking scores.</p>
+<p>So another thing, you can have an idea, like, you can have a question in mind, like, can I gen… can I arrange a match between patient and patient? So maybe I&#x27;m doing like patient here</p>
+<p>[Mohsena] So another thing, you can have an idea, like, you can have a question in mind, like, can I gen… can I arrange a match between patient and patient? So maybe I&#x27;m doing like patient here, and patient here. So, maybe I have G1 values of 1 and G1 values of 1. So if</p>
+<p>[Mohsena] So, maybe I have G1 values of 1 and G1 values of 1.</p>
+<p>So if we are taking similar tokens and everything is similar for that particular layer, then it is going to be receiving the same values, right? So for G2, it can be 0, but for G1, as it&#x27;s the same token, it can have</p>
+<p>[Mohsena] So for G2, it can be 0, but for G1, as it&#x27;s the same token, it can have like same values. So can this happen? Yeah, this can happen, but in those cases whereIf In this phase, we actually selected patient 2 times. [Mohsena] So can this happen?</p>
+<p>Yeah, this can happen, but in those cases whereIf In this phase, we actually selected patient 2 times, so for example, I take a random draw of like, for example. [Mohsena] So can this happen? Yeah, this can happen, but in those cases whereIf In this phase, we actually selected patient 2 times, so for example, I take a random draw of like, for example, let me take a random draw of 0.65, forMAIf In this phase, we actually selected patient 2 times, so for example, I take a random draw of like, for example, let me take a random draw of 0.65, for example. So if my random draw of one number is becoming like 0.6</p>
+<p>[Mohsena] In this phase, we actually selected patient 2 times, so for example, I take a random draw of like, for example, let me take a random draw of 0.65, for example. So if my random draw of one number is becoming like 0.6 Then patient gets selected twice as the random number</p>
+<p>[Mohsena] Then patient gets selected twice as the random number, as the candidate token.</p>
+<p>So this random number is selected twice like the range 0.6 or 0.65. Then patient is selected twice. So yeah. So that&#x27;s how watermarking doesn&#x27;t affect the quality of the text, because if a</p>
+<p>[Mohsena] So that&#x27;s how watermarking doesn&#x27;t affect the quality of the text, because if a particular word or token has very much higher probability of getting selected. So you can think like whenever we are drawing random samples There is a probability that my random draw will</p>
+<p>[Mohsena] There is a probability that my random draw will fall into that range multiple times.</p>
+<p>So I can get that token multiple times. And if I get candidate tokens like this, like friendly, patient, patient, kind. Then you can arrange a match patient versus patient, but otherwise it&#x27;s not possible. So yeah</p>
+<p>[Mohsena] Then you can arrange a match patient versus patient, but otherwise it&#x27;s not possible. So yeah And the tournament configuration actually determines like how many candidate samples are needed.</p>
+<p>So for this particular example, we actually worked with 4 candidate samples, but and that actually gets</p>
+<p>[Mohsena] And the tournament configuration actually determines like how many candidate samples are needed. So for this particular example, we actually worked with 4 candidate samples, but and that actually gets German, like, how many use are drawn. So, yeah, you can see now the significance of the categorical sampling in our lecture because</p>
+<p>[Mohsena] the significance of the categorical sampling in our lecture because in our lecture today, because that actually gives us an idea like how how candidate tokens are getting selected So the design choice is, like, the design choice of the candidate tokens is up to the model. So we are working</p>
+<p>[Mohsena] So the design choice is, like, the design choice of the candidate tokens is up to the model. So we are working with four candidate tokens, and that&#x27;s why we have</p>
+<p>[Mohsena] So the design choice is, like, the design choice of the candidate tokens is up to the model.</p>
+<p>So we are working with four candidate tokens and that&#x27;s why we have two rounds of matches. If you have like 8 candidate of tokens, you can have three kind of three round of matches So it&#x27;s just a design choice. So</p>
+<p>[Mohsena] So it&#x27;s just a design choice. So Again, in the next tokin generation, the same processes actually happens. But what happens is that the feed will change here as the previous token will change.</p>
+<p>So, for example. [Mohsena] So it&#x27;s just a design choice. So, for example, if you remember, this is my watermarking seed and watermarking seed works with the secret key</p>
+<p>[Mohsena] Again, in the next tokin generation, the same processes actually happens. So, for example, if you remember, this is my watermarking seed and watermarking seed works with the secret key and the previous tokens. So in this example, the my previous tokens was like the</p>
+<p>[Mohsena] But what happens is that the feed will change here as the previous token will change.</p>
+<p>So in this example, the my previous tokens was like the teacher was really these 4 words But if</p>
+<p>[Mohsena] But if I find this word helpful, and I work for the next token, so maybe the sentence is something like, the teacher was really helpful Something else or Any other word. So if I am trying to predict the next word again with the watermarking process. So now what changes is that the preceding</p>
+<p>[Mohsena] Something else or Any other word. So now what changes is that the preceding context length. So these are my preceding tokens right now, these four tokens Teacher was really helpful, so then The combination changes and the G1, G2 values</p>
+<p>[Mohsena] Any other word.</p>
+<p>So these are my preceding tokens right now, these four tokens Teacher was really helpful, so then The combination changes and the G1, G2 values also change. So</p>
+<p>[Mohsena] Teacher was really helpful, so then The combination changes and the G1, G2 values also change. So also the candidate tokens will change because we are predicting the next token. So that&#x27;s how it works. And it&#x27;s not a fixed process.</p>
+<p>Every for every token, the values will change for every layer, the values will change</p>
+<p>[Mohsena] The combination changes and the G1, G2 values also change. Every for every token, the values will change for every layer, the values will change So, yeah. [Mohsena] So, yeah, I have told a lot of times in today&#x27;s session. [Mohsena] So, yeah, I have told a lot of times in today&#x27;s session, like, watermarking actually doesn&#x27;t affect the quality of the sentence that much. Yeah.</p>
+<p>[Mohsena] So, yeah, I have told a lot of times in today&#x27;s session, like, watermarking actually doesn&#x27;t affect the quality of the sentence that much. Yeah, it actually affects some words, but not that much. So we still have some good quality text because we are drawing the samples from the model probabilities Not</p>
+<p>[Mohsena] Not the watermarking seed generation or watermarking algorithm. So, we are talking about the entropy here. So, entropy means how certain or uncertain is the model about my next token.</p>
+<p>So For example, you see this example like the Earth moves around the…</p>
+<p>[Mohsena] So, we are talking about the entropy here. So For example, you see this example like the Earth moves around the… So for this type of sentences, the earth moves around</p>
+<p>[Mohsena] For example, you see this example like the Earth moves around the… So for this type of sentences, the earth moves around the sun. So for this type of sentences, you can see you cannot place any other thing other than sun. So it&#x27;s kind of a constant text or truth</p>
+<p>[Mohsena] Always truth. So in that type of sentences, you don&#x27;t have that much choice for token generation.</p>
+<p>So there is no freedom. So this is very low entropy and watermarking cannot affect that much In this low entropy sentences, because if you think, again. [Mohsena] In this low entropy sentences, because if you think again, watermarking mainly works with randomness, but the token generation mostly depends on the Llm model probability. So if The text token next candidate tokens are</p>
+<p>[Mohsena] In this low entropy sentences, because if you think again, watermarking mainly works with randomness, but the token generation mostly depends on the Llm model probability. So if The text candidate tokens are SAN, SAN, SAN, SAN because the LLM model</p>
+<p>[Mohsena] The text candidate tokens are SAN, SAN, SAN SAN because the LLM model will generate the most probabilities for that particular token son Then, actually.</p>
+<p>[Mohsena] The text candidate tokens are SAN, SAN, SAN SAN because the LLM model will generate the most probabilities for that particular token son Then, actually, watermarking doesn&#x27;t have any choice except choosing the word sun. So in case of low entropy sentences, watermarking cannot</p>
+<p>[Mohsena] Then, actually, watermarking doesn&#x27;t have any choice except choosing the word sun. So in case of low entropy sentences, watermarking cannot Show its effect that much because it&#x27;s either way a constant sentence, and the next token should be a selected fixed token But if I have, like, some kind of high</p>
+<p>[Mohsena] Show its effect that much because it&#x27;s either way a constant sentence, and the next token should be a selected fixed token But if I have, like, some kind of high entropy sentence. [Mohsena] Show its effect that much because it&#x27;s either way a constant sentence, and the next token should be a selected fixed token But if I have, like, some kind of high entropy sentence, like if I have many possible choices for the next token, for example, the baby is crying for maybe It can be multiple words. [Mohsena] But if I have, like, some kind of high entropy sentence, like if I have many possible choices for the next token, for example, the baby is crying for maybe It can be multiple words, right?</p>
+<p>Like, maybe it&#x27;s crying for food, or maybe toys, or maybe for his mother, or any other</p>
+<p>[Mohsena] It can be multiple words, right? Like, maybe it&#x27;s crying for food, or maybe toys, or maybe for his mother, or any other word. So in this type of sentences, what happens is that, like, you have more chance for watermarking Because you have a lot of candidate tokens there with the</p>
+<p>[Mohsena] Because you have a lot of candidate tokens there with the Llm model probabilities. But here you have just Few, or I would say just one candidate token, and you kind of average match with those same tokens. So synth ID text generation, the mechanism of behind this watermarking.</p>
+<p>It has greater flexibility</p>
+<p>[Mohsena] Few, or I would say just one candidate token, and you kind of average match with those same tokens. It has greater flexibility in influencing this type of height entropy sentences And it doesn&#x27;t affect the quality of the genetic text that much. So that was all for</p>
+<p>[Mohsena] And it doesn&#x27;t affect the quality of the genetic text that much. So that was all for the, watermarking process, like, how the watermarking process is done. So this process iterates for every token generation, every word generation, and then, yeah</p>
+<p>[Mohsena] So that was all for the, watermarking process, like, how the watermarking process is done.</p>
+<p>So this process iterates for every token generation, every word generation, and then, yeah That&#x27;s how the</p>
+<p>[Mohsena] That&#x27;s how the watermarking process works. So now let&#x27;s move on to like if we did the watermarking, the main goal for watermarking is detecting AI generated text right? So that we can tell a little bit. I cannot 100% say like this text was generated by watermark But we at least can</p>
+<p>[Mohsena] But we at least can claim some kind of probabilities like, yeah. I am that person sure this text was generated by LLM So yeah, we will take a look into that But let&#x27;s take those theoretical</p>
+<p>[Mohsena] I am that person sure this text was generated by LLM So yeah, we will take a look into that But let&#x27;s take those theoretical concepts into our knowledge.</p>
+<p>So why we are using a watermarking</p>
+<p>[Mohsena] So yeah, we will take a look into that But let&#x27;s take those theoretical concepts into our knowledge. So why we are using a watermarking seed instead of a standard random seed like if you are familiar with the computers. [Mohsena] So yeah, we will take a look into that But let&#x27;s take those theoretical concepts into our knowledge. So why we are using a watermarking seed instead of a standard random seed like if you are familiar with the computers, random number generator functions</p>
+<p>[Mohsena] But let&#x27;s take those theoretical concepts into our knowledge. So why we are using a watermarking seed instead of a standard random seed like if you are familiar with the computers, random number generator functions So we can just take a standard random seed</p>
+<p>[Mohsena] So we can just take a standard random seed.</p>
+<p>So while we are working with the watermarking seed. So the main goal is to make the detection process easier. So if you just work with the random seed, then it&#x27;s it adds more randomness. [Mohsena] So we can just take a standard random seed. So if you just work with the random seed, then it adds more randomness, right?</p>
+<p>But we are working with the watermarking seed so that the secret key is in the hands of Anthropic They can try to detect, like, if</p>
+<p>[Mohsena] They can try to detect, like, if this text was detected by Claude or yeah. So again. [Mohsena] They can try to detect, like, if this text was detected by Claude or yeah. So again, this watermarking seed actually, this watermarking seed actually helps us to detect the watermark. Without running the whole prompt through the LLM again, so if we don&#x27;t use the</p>
+<p>[Mohsena] So again, this watermarking seed actually, this watermarking seed actually helps us to detect the watermark.</p>
+<p>Without running the whole prompt through the LLM again, so if we don&#x27;t use the watermarking schema, so we have like everything random, and the seed is also purely random, I would say. Then</p>
+<p>[Mohsena] Without running the whole prompt through the LLM again, so if we don&#x27;t use the watermarking schema, so we have like everything random, and the seed is also purely random, I would say. Then what happens is that like we have to run the sentence again</p>
+<p>[Mohsena] Through the whole sentence to the LLM again, and that will take… that will make us very computationally expensive</p>
+<p>[Mohsena] Through the whole sentence to the LLM again, and that will take… that will make us very computational expensive, because we are taking those values, we are generating some G values. We are comparing between them, and then we are doing some tournament. So it&#x27;s just for one token.</p>
+<p>We did a lot of processes, but Whenever the number of tokens gets larger, that</p>
+<p>[Mohsena] Whenever the number of tokens gets larger, that will be very computationally expensive for us. So that&#x27;s why we are using the watermarking seed And for example. [Mohsena] Whenever the number of tokens gets larger, that will be very computationally expensive for us. So that&#x27;s why we are using the watermarking seed And for example, understanding the watermarking detection process. So, for example.</p>
+<p>[Mohsena] Whenever the number of tokens gets larger, that will be very computationally expensive for us. So that&#x27;s why we are using the watermarking seed And for example, understanding the watermarking detection process, so for example, maybe I take 2 sentences from internet, just random sentences, and I want to check</p>
+<p>[Mohsena] And for example, understanding the watermarking detection process, so for example, maybe I take 2 sentences from internet, just random sentences, and I want to check, like, if it is what it was watermarked, basically, which means if it was generated by AI or not. So this is</p>
+<p>[Mohsena] So this is the sentence 1 detection process, and this is the sentence 2 detection process. So we are just comparing like With AI generated one and non-AI generated one. So yeah, this is my token positions.</p>
+<p>So my first sentence is the friendly mentor clearly explains concepts</p>
+<p>[Mohsena] With AI generated one and non-AI generated one. So my first sentence is the friendly mentor clearly explains concepts A very random sentence. So yeah, this is my context. So what do I mean by context? So if I see a particular token friendly.</p>
+<p>[Mohsena] With AI generated one and non-AI generated one. So if I see a particular token friendly, then what is my previous tokens</p>
+<p>[Mohsena] A very random sentence. So I take 2 previous tokens. So my preceding context length is 2. Why 2?</p>
+<p>Because it&#x27;s a design choice If your watermarking detection algorithm has some kind</p>
+<p>[Mohsena] If your watermarking detection algorithm has some kind of other design choice, like it can use 4, it can use 8 other context length tokens. I&#x27;m just using two for the simplicity of the example. And you can ask me, like. Why we are starting with friendly, not about not starting with</p>
+<p>[Mohsena] Why we are starting with friendly, not about not starting with the because I assume like da was given to the LLM and the next token generated by LLM was friendly or next token that should be generated by LLM is friendly. So that&#x27;s why the observed token is friendly starts from friendly</p>
+<p>[Mohsena] So, yeah, we have, context here for mentor, we get the previous two words, the friendly.</p>
+<p>And for clearly we will get the previous two words friendly mentor. I believe it&#x27;s pretty much easier to understand. So I&#x27;m Not talking about too much details about this</p>
+<p>[Mohsena] Not talking about too much details about this, so just previous two tokens. So, we have some G one values and G2 values. So what does this mean?</p>
+<p>So if you see like Now, for the detection process. [Mohsena] Not talking about too much details about this, so just previous two tokens. So if you see like Now, for the detection process, we are not running the sentence through the LLM again, like we are not running the whole sentence</p>
+<p>[Mohsena] So, we have some G one values and G2 values. What we do is that we generate the G values for the particular to</p>
+<p>[Mohsena] Now, for the detection process, we are not running the sentence through the LLM again, like we are not running the whole sentence. What we do is that we generate the G values for the particular tokens I see 5 tokens here, right?</p>
+<p>So the token</p>
+<p>[Mohsena] I see 5 tokens here, right? So the token is the friendly mentor clearly explains concepts. So for those basically 6 tokens. So for those 6 tokens, I actually generate G1 and G2 values. But as my starting token was given by myself So, I have 5 observed tokens, and for 5 observed tokens</p>
+<p>[Mohsena] So, I have 5 observed tokens, and for 5 observed tokens, I generate those G1 and G2 values.</p>
+<p>So you might be asking me like How can I get those G1 and G2? Because I don&#x27;t have any layer numbers, I don&#x27;t know about tournament sampling here, because I just took that text randomly from Internet. So how</p>
+<p>[Mohsena] How can I get those G1 and G2? So how can I understand like what are what was the candidates for this particular token So here is another thing to understand. Like, whenever</p>
+<p>[Mohsena] So here is another thing to understand.</p>
+<p>Like, whenever we are generating G1 and G2 values for the observed token, what happens is that anthropic has the secret key, right? Anthropic has the secret key, and you can see the or you can have the</p>
+<p>[Mohsena] Like, whenever we are generating G1 and G2 values for the observed token, what happens is that anthropic has the secret key, right? Anthropic has the secret key, and you can see the or you can have the previous tokens from the sentence, right? So this is my</p>
+<p>[Mohsena] Start Notion and the and the and then the and friendly. So you have those previous tokens.</p>
+<p>So you don&#x27;t have the set of candidate tokens. So For this particular detection process, we are not going through the whole process. So how can I get the candidate tokens? So for detection process, the candidate tokens</p>
+<p>[Mohsena] For this particular detection process, we are not going through the whole process. So for detection process, the candidate tokens replaced by gets replaced by observed token.</p>
+<p>So the new GU value G value for these tokens will be calculated With this word, just this</p>
+<p>[Mohsena] With this word, just this word, friendly. Not with all those combinations, like friendly, kind, helpful, and other stuff. So just friendly will be used for that G1 value calculation. And the layer number. So, how can you be sure, like, yeah.</p>
+<p>[Mohsena] With this word, just this word, friendly. So, how can you be sure, like, yeah, my Llm actually used 2g functions for the generation</p>
+<p>[Mohsena] And the layer number. So, how can you be sure, like, yeah, my Llm actually used 2g functions for the generation process. So again, it&#x27;s a design choice like if your watermark detection algorithm has How many G values, how many G functions? So, for example.</p>
+<p>[Mohsena] And the layer number. So for example, my watermark detection</p>
+<p>[Mohsena] How many G values, how many G functions? So for example, my watermark detection algorithm system here has two scoring functions, G1 and G2. So we kind of can give the layer number one for the first G1 calculation, layer number two for the second G calculation Our G2 calculation, so the candidate</p>
+<p>[Mohsena] Our G2 calculation, so the candidate generation is not needed anymore because that&#x27;s when the LLM actually does a lot of steps there. And, candidate tokens gets replaced by the observed token.</p>
+<p>And also the watermark depth or like how many G values do we need</p>
+<p>[Mohsena] And, candidate tokens gets replaced by the observed token. And also the watermark depth or like how many G values do we need, the number of layers is a design parameter for the watermarking system. So yeah, suppose I have G1 values like this and G2 values like this. It&#x27;s calculated right So, with the watermarking detection algorithm</p>
+<p>[Mohsena] So, with the watermarking detection algorithm, or watermarking detection system. So if you see, like, for this particular</p>
+<p>[Mohsena] So, with the watermarking detection algorithm, or watermarking detection system.</p>
+<p>So if you see like for this particular word friendly, I can get two bits of information of G values. Like, sorry, two bits means like two values</p>
+<p>[Mohsena] So, with the watermarking detection algorithm, or watermarking detection system. So if you see like for this particular word friendly, I can get two bits of information of G values like sorry two bits means like two values and the number of bits for this information is one bit because we just get one as the G value</p>
+<p>[Mohsena] For G1 and for G2 is 0. So for the second observed token, which is mentor, I get 2 bits of information. So I just do this one Should be plus Yeah, so… and then it&#x27;s again this one plus this one So, let me drag this information</p>
+<p>[Mohsena] Should be plus Yeah, so… and then it&#x27;s again this one plus this one So, let me drag this information.</p>
+<p>So yeah, that&#x27;s how I get the total number of bids. So total number of bits will be simply sum of all the bits here. So these are my bits, some of the bits. So this was the submission</p>
+<p>[Mohsena] Yeah, so… and then it&#x27;s again this one plus this one So, let me drag this information. So this was the submission of the bits.</p>
+<p>[Mohsena] So, let me drag this information. This… there is an error here, so that should be this one. Yeah, so the total number</p>
+<p>[Mohsena] So this was the submission of the bits. Yeah, so the total number of bits should be 9 here, and for the same mechanism, same process, we generate the bits for the sentence 2. So this sentence, the helpful teacher simply presents ideas</p>
+<p>[Mohsena] This… there is an error here, so that should be this one.</p>
+<p>So this sentence, the helpful teacher simply presents ideas So in the same way we get bit information for this. So this one</p>
+<p>[Mohsena] So in the same way we get bit information for this. So this one plus this one. Let me drag the information here And then I can count the sum of the total number of bits generated by those G values. So this one Yeah, now you can see the minimum G-value</p>
+<p>[Mohsena] And then I can count the sum of the total number of bits generated by those G values.</p>
+<p>So this one Yeah, now you can see the minimum G-value for the sentence 1. So this is my sentence 1. So this is my sentence one bit value. So the average G value for this is, like, I have</p>
+<p>[Mohsena] Yeah, now you can see the minimum G-value for the sentence 1. So the average G value for this is, like, I have the value here, 9 divided by the total G values.</p>
+<p>So total G values was like 10. Total G values</p>
+<p>[Mohsena] 10. Total G values, right? So, for 5 observed tokens, I have 10… 10 G values, so it&#x27;s 0.9, the average G-value. So basically, it&#x27;s this one Into 100%?</p>
+<p>Sorry. So, this one into 100%. [Mohsena] Into 100%? Sorry. So, this one into 100%.</p>
+<p>And for, sentence 2, again, the similar logic, so this value, the total number of bits divided by</p>
+<p>[Mohsena] So, this one into 100%. And for, sentence 2, again, the similar logic, so this value, the total number of bits divided by or the total G value divided by the number of Jira Luzier. So. [Mohsena] And for, sentence 2, again, the similar logic, so this value, the total number of bits divided by or the total G value divided by the number of So, yeah, again, and I can simply do this percentage. So you can</p>
+<p>[Mohsena] So, yeah, again, and I can simply do this percentage.</p>
+<p>So you can see that the G value has a very significant thing here. So I assume our watermarking detection algorithm has a threshold of 60%. So if your G value is below 60%, we can say, like, yeah, it was not watermarked. So</p>
+<p>[Mohsena] I assume our watermarking detection algorithm has a threshold of 60%. So no.</p>
+<p>If it&#x27;s below 60%, but if it&#x27;s higher than 60%, we can say the text was watermarked So yeah, can you say, can you claim 100%</p>
+<p>[Mohsena] If it&#x27;s below 60%, but if it&#x27;s higher than 60%, we can say the text was watermarked So yeah, can you say, can you claim 100% that it was detected by watermark? No. [Mohsena] If it&#x27;s below 60%, but if it&#x27;s higher than 60%, we can say the text was watermarked So yeah, can you say, can you claim 100% that it was detected by watermark? No, because you can say, yeah, it&#x27;s very highly likely like the text was detected, generated by</p>
+<p>[Mohsena] If it&#x27;s below 60%, but if it&#x27;s higher than 60%, we can say the text was watermarked So yeah, can you say, can you claim 100% that it was detected by watermark? No, because you can say, yeah, it&#x27;s very highly likely like the text was detected generated by AI</p>
+<p>[Mohsena] So yeah, can you say, can you claim 100% that it was detected by watermark?</p>
+<p>But you cannot claim 100%. So this is basically a statistical evidence</p>
+<p>[Mohsena] So it cannot claim 100%. And again, some sentences which was generated by watermark, that can also fall like fail in the detection system. You can edit some words here and there, and that will fill the threshold check So what happens if we try to edit the… to</p>
+<p>[Mohsena] So what happens if we try to edit the… to change the watermarking score? So we don&#x27;t have that much time.</p>
+<p>I will just go through the example here. I&#x27;m not going to solish like solve the problem here. We will just try to understand So what happens is that. [Mohsena] So what happens if we try to edit the… to change the watermarking score? We will just try to understand So what happens is that, for example, I have the sentence</p>
+<p>[Mohsena] So what happens is that, for example, I have the sentence like the friendly mentor clearly explains concepts.</p>
+<p>So this is my observed token or original token friendly. And this is my original context. So the previous two tokens, so start and the For mentor, we have like</p>
+<p>[Mohsena] So what happens is that, for example, I have the sentence like the friendly mentor clearly explains concepts. So the previous two tokens, so start and the For Mentor, we have like the and friendly</p>
+<p>[Mohsena] So what happens is that, for example, I have the sentence like the friendly mentor clearly explains concepts. So the previous two tokens, so start and the For mentor, we have like the and friendly because the</p>
+<p>[Mohsena] For mentor, we have like the and friendly because the we take the from the second token here and friendly from the previous observed token.</p>
+<p>So you can see like these are my original tokens, and this is my original context. So what I do is I get the… this text was, for example, AI generated</p>
+<p>[Mohsena] I get the… this text was, for example, AI generated. I kind of change a word there, just a word. So you can see like this highlighted color represents changes. So I change this word mentor to teacher.</p>
+<p>What happens then? So then happens. What happens is like the edited context also change</p>
+<p>[Mohsena] So the context with the edited word So it remains the same, so same token and same context, it remains the same one. So the context, so the original context and the edited context is the same. So the observed token actually changes</p>
+<p>[Mohsena] So it remains the same, so same token and same context, it remains the same one.</p>
+<p>So the observed token actually changes because I changed the token from mentor to teacher. So the token actually changed</p>
+<p>[Mohsena] And then, here, the friendly mentor gets changed to the context as friendly teacher. So context also changed. Here the context also changed. Mentor clearly gets changed to teacher clearly.</p>
+<p>So if you remember, the G value depends on the watermarking seed. So the anthropic secret</p>
+<p>[Mohsena] So if you remember, the G value depends on the watermarking seed. So the anthropic secret key, which does not change, then it can change for different detections, but yeah</p>
+<p>[Mohsena] So if you remember, the G value depends on the watermarking seed. But yeah, that&#x27;s that I do not know, right Then I have the previous tokens</p>
+<p>[Mohsena] Then I have the previous tokens, which changes here. So you can see the previous tokens changes here.</p>
+<p>So that&#x27;s why this actually the G value is also change here. And then it also takes account the observed tokens. So the observed token changes here. So we have the change of observed token here So this is</p>
+<p>[Mohsena] So this is the thing where it gets changed, and the number of weights changed, you can see, like, here, two bits We get two less bits. We get one less bit, and we get two less bit.</p>
+<p>So do we get always like minus something? No. If my previous G values were. [Mohsena] So this is the thing where it gets changed, and the number of weights changed, you can see, like, here, two bits We get two less bits. No.</p>
+<p>If my previous G values were, for example, 0 and</p>
+<p>[Mohsena] We get two less bits. No. If my previous G values were, for example, 0 and 0, just an example, I have like here one and That gets changed to the change</p>
+<p>[Mohsena] That gets changed to the change of which information is 2. So it&#x27;s not negative always. It can be positive or negative, depending on your selection choice or G values.</p>
+<p>So if I do that. [Mohsena] That gets changed to the change of which information is 2. So if I do that, then what you can see is that Yeah. What you can see is that the average G value for</p>
+<p>[Mohsena] Yeah. What you can see is that the average G value for that particular sentence was 90% or like 0.9, the detection score.</p>
+<p>But whenever I just changed a single token, but you can see there are a lot of changes there The observed token changed also, the context changed</p>
+<p>[Mohsena] The observed token changed also, the context changed. And if you take like previous 3 or 4 tokens as your context, you will have a lot of more changes in particular rows. So that&#x27;s actually changes the Watermarking score values. Basically, so</p>
+<p>[Mohsena] Watermarking score values. Basically, so then the average value of the edited sentence actually gets changed to 0.4.</p>
+<p>So you can see I just changed one word there from mentor to teacher and the value dropped by like 50%, almost 50 So that&#x27;s when it actually fails into the threshold checker</p>
+<p>[Mohsena] So that&#x27;s when it actually fails into the threshold checker. And yeah. [Mohsena] So that&#x27;s when it actually fails into the threshold checker. And yeah, even… so this is the, I would say the claim you can see here, like even a small change to a token can weaken the watermark signal and Potentially change the</p>
+<p>[Mohsena] Potentially change the direction result with just a small token change, and it actually provides statistical evidence. It cannot 100% claim, like, text was either generated by AI or not by AI.</p>
+<p>So, you can</p>
+<p>[Mohsena] Potentially change the direction result with just a small token change, and it actually provides statistical evidence. So you can claim within a percentage, but you cannot say, like, yeah, I am 100% sure. So yeah, that was all about how watermarking</p>
+<p>[Mohsena] So yeah, that was all about how watermarking works, watermarking detection process, and what about like if we change a token to change the watermarking score. Yeah, so that was all. I believe you like the lecture, and you can, like, share your feedback in the chat and</p>
+<p>[Mohsena] I believe you like the lecture, and you can, like, share your feedback in the chat and Tom, if you want to takeI think</p>
+<p>[Mohsena] I believe you like the lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great.</p>
+<p>I learned a lot about</p>
+<p>[Mohsena] I believe you like the lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great. I learned a lot about watermarking. I have some assumptions about</p>
+<p>[Mohsena] I believe you like the lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great. I have some assumptions about it. [Mohsena] I believe you like the lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great.</p>
+<p>I realized I was wrong, and</p>
+<p>[Mohsena] I believe you like the lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great. I realized I was wrong, and it&#x27;s good to see you. I thought</p>
+<p>[Mohsena] I believe you like the lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great. I thought before I thought what do marketing require, you have to feed</p>
+<p>[Mohsena] lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great. I thought before I thought what do marketing require, you have to feed everything back to the</p>
+<p>[Mohsena] lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great.</p>
+<p>I thought before I thought what do marketing require, you have to feed everything back to the To the model</p>
+<p>[Mohsena] lecture, and you can, like, share your feedback in the chat and Tom, if you want to take from here.I think this is great. And yeah, I guess</p>
+<p>[Mohsena] Tom, if you want to take from here.I think this is great. And yeah, I guess it would have been expensive that</p>
+<p>[Mohsena] Tom, if you want to take from here.I think this is great. And yeah, I guess it would have been expensive that way</p>
+<p>[Mohsena] Tom, if you want to take from here.I think this is great. And thank you so much for working on it.</p>
+<p>And by the way, for everybody who doesn&#x27;t know, already know about this. So this is actually Mosena&#x27;s PhD dissertation topic and how you could translate the hardest and the latest AI concept into a familiar metaphor. And so she&#x27;s going to do her the proposal pretty soon, and hopefully finish her dissertation in the spring. So that is one of the reason we&#x27;re doing this as well I hope then… I thought I gave her a really difficult topic, and she did pretty well. So please provide your feedback, and if we do this event again, if you want her to do this event again, just monitor what is the artist Latest topic that coming out that you&#x27;d like to have some explanation that you can just email me and or email Mossena, then we&#x27;re going to think about it.</p>
+<p>And maybe we can run another seminar like this. And for the in the future weeks, we&#x27;llLatest topic that coming out that you&#x27;d like to have some explanation that you can just email me and or email Mossena, then we&#x27;re going to think about it. And for the in the future weeks we&#x27;ll have other seminars from other speakers. Also GoingLatest topic that coming out that you&#x27;d like to have some explanation that you can just email me and or email Mossena, then we&#x27;re going to think about it. Also going to be something that I I turns out I just like to challenge people and also get to learn something new myself and my many of my colleagues are live up to the challenge.</p>
+<p>So I&#x27;ll bring more speakers to this seminargoing to be something that I I turns out I just like to challenge people and also get to learn something new myself and my many of my colleagues are live up to the challenge. So I&#x27;ll bring more speakers to this Seminar that we might be a couple more, so for… they will make them public. There also will be private oneSo, all right, thank you so much for joining. And one more thing, we forgot to turn on recording in the beginning, so if you happen to have your recording, we really need your help, so we can have the complete recording. And please just also email us to help us out, too.</p>
+<p>Thank you. Okay, all rightSo, all right, thank you so much for joining. Thank you. Okay. All right, Mosena, any last word?</p>
+<p>[Mohsena] Thank you everyone for Okay. All right, Mosena, any last word? [Mohsena] Thank you everyone for joining. I hope Okay. I hope you actually got some Okay.</p>
+<p>I hope you actually got some knowledge from this session. That&#x27;s the main Okay. That&#x27;s the main goal of this Okay. That&#x27;s the main goal of this sessions to Okay. That&#x27;s the main goal of this sessions to work on something Okay.</p>
+<p>That&#x27;s the main goal of this sessions to work on something knowledgeable. And yeah Okay. And yeah, if you have some kind of Okay. And yeah, if you have some kind of feedback for me, please feel free to email me And share, and that will help me learn a lot, like, how can I</p>
+<p>[Mohsena] And share, and that will help me learn a lot, like, how can I improve these thingsAlright, thank</p>
+<p>[Mohsena] And share, and that will help me learn a lot, like, how can I improve these things? So yeah, thanks a lot for joining everyone.Alright, thank you.</p>
+<p>[Mohsena] And share, and that will help me learn a lot, like, how can I improve these things? Okay, all right, bye bye, everyone</p>
+<p>[Mohsena] And share, and that will help me learn a lot, like, how can I improve these things? So yeah, thanks a lot for joining everyone.FINAL|Alright, thank you.</p></pre>
+</div>
+
+<!-- SCREENSHOTS -->
+<div class="panel" id="panel-shots">
+  <p class="dim" style="margin-bottom:18px">Captured live from the Zoom session as Mohsena worked through the workbook. Click any image to open it full size.</p>
+  <figure><a href="shots/outline.png" target="_blank"><img src="shots/outline.png" alt="Workbook outline" loading="lazy"></a><figcaption>00:02 - The CLAUDE_Watermarking workbook outline.</figcaption></figure>
+  <figure><a href="shots/token-generation.png" target="_blank"><img src="shots/token-generation.png" alt="Regular token generation pipeline" loading="lazy"></a><figcaption>00:11 - Regular Token Generation: tokenization to softmax, greedy decoding, categorical sampling.</figcaption></figure>
+  <figure><a href="shots/candidate-tokens.png" target="_blank"><img src="shots/candidate-tokens.png" alt="Selection of candidate tokens" loading="lazy"></a><figcaption>00:22 - How Watermarking Works: selecting candidate tokens with four u-draws.</figcaption></figure>
+  <figure><a href="shots/synthid-g.png" target="_blank"><img src="shots/synthid-g.png" alt="SynthID pseudorandom functions g" loading="lazy"></a><figcaption>00:32 - SynthID-Text: pseudorandom functions g and the g1/g2 score table.</figcaption></figure>
+  <figure><a href="shots/tournament.png" target="_blank"><img src="shots/tournament.png" alt="Tournament sampling" loading="lazy"></a><figcaption>00:43 - Tournament Sampling: knockout rounds scored by g1 then g2.</figcaption></figure>
+  <figure><a href="shots/detection.png" target="_blank"><img src="shots/detection.png" alt="Watermark detection tables" loading="lazy"></a><figcaption>00:53 - Detection: observed tokens scored into bits and a mean g-value per sentence.</figcaption></figure>
+</div>
+
+<!-- CHAT Q&A -->
+<div class="panel" id="panel-qa">
+  <p class="dim" style="margin-bottom:18px">Selected questions and answers from the live meeting chat, lightly edited for readability.</p>
+
+  <div class="qa"><div class="q"><span class="who">Hasib:</span> Pixel changing is watermarking for images?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> Adding some subtle pattern detectable by machine but not by humans.</div></div>
+  <div class="qa"><div class="q"><span class="who">Hasib:</span> Why adding for the upper bound?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> Because you want to give a slice for each word. Patient gets 25% of the slice, kind gets 8%, etc.</div></div>
+  <div class="qa"><div class="q"><span class="who">Hossein Afsharnia:</span> What if instead of distinct ranges we had probability ranges that overlap?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> We want them to add up to one so there's no overlap. The math of softmax guarantees all probability values add to one.</div></div>
+  <div class="qa"><div class="q"><span class="who">Hasib:</span> How are those probability values selected?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> The transformer model is trained to do that.</div></div>
+  <div class="qa"><div class="q"><span class="who">Stefano Fochesatto:</span> What happens when a large temperature gives you different candidate tokens? Do we assume the candidate tokens are deterministic?</div><div class="a"><span class="who">Agrima (participant):</span> A large temperature only means a higher chance of sampling from otherwise lower-probability tokens.</div></div>
+  <div class="qa"><div class="q"><span class="who">Nash Ashworth:</span> Does "g-value" mean "generated"?</div><div class="a">Explained live: g is the pseudorandom scoring function from the SynthID-Text paper - the g-value is its output score (0/1 in the workbook), not short for "generated".</div></div>
+  <div class="qa"><div class="q"><span class="who">Hasib:</span> How do you select those 0s and 1s for g1 and g2?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> From the equation earlier - watermarking seed + candidate + layer number gives g1 or g2.</div></div>
+  <div class="qa"><div class="q"><span class="who">Mehar Simhadri:</span> Does watermarking affect future training data - does it introduce watermark bias?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> Yes, if we feed generated data back to train the model - for example using a teacher model to generate reasoning traces to train a student model (distillation). Watermarking could also help companies segregate and remove AI-generated content from training sets.</div></div>
+  <div class="qa"><div class="q"><span class="who">Cire DIALLO:</span> Is every next token affected by the secret key + previous tokens, or only some positions?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> We apply watermarking to every decoded token.</div></div>
+  <div class="qa"><div class="q"><span class="who">Hossein Afsharnia:</span> What if the target token for watermarking is the word "moves" instead of "sun"?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> We apply watermarking to every decoded token.</div></div>
+  <div class="qa"><div class="q"><span class="who">Nash Ashworth:</span> Would watermarking be defeated by commas, hyphens, colons, semicolons?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> Every position needs to be edited.</div></div>
+  <div class="qa"><div class="q"><span class="who">Andres Moreno:</span> How robust is the watermark when extra tokens are added to the output?</div><div class="a">Covered live in the editing demo: changes cascade through the seed because it depends on previous tokens, so added or edited tokens shift the score (see step 11).</div></div>
+  <div class="qa"><div class="q"><span class="who">Antonio J:</span> I saw "skills for erasing Claude's watermark" - could the watermark be removed through prompting or a skill?</div><div class="a"><span class="who">Prof. Tom Yeh:</span> My thought is that Anthropic has its own private version of watermarking detection, so they know if they really want to check.</div></div>
+  <div class="qa"><div class="q"><span class="who">Hasib:</span> Who will detect this score? If text is generated by Claude, does Claude also detect whether the answer is watermarked?</div><div class="a"><span class="who">Mohsena Ashraf:</span> Mostly Claude is doing it. I have also heard Google is following the process too.</div></div>
+  <div class="qa"><div class="q"><span class="who">Ena:</span> If I use multiple LLMs sequentially, one after another, will the original watermark still remain?</div><div class="a"><span class="who">Mohsena Ashraf:</span> Mostly, no. It will change.</div></div>
+  <div class="qa"><div class="q"><span class="who">Hasib:</span> Is there no watermarking for OpenAI yet?</div><div class="unanswered">No typed answer captured; not addressed live before time ran out.</div></div>
+  <div class="qa"><div class="q"><span class="who">Hasib:</span> Is it like tournament selection in genetic algorithms?</div><div class="unanswered">No typed answer captured; conceptually similar bracket mechanics, but here the "fitness" is the pseudorandom g-value, not quality.</div></div>
+</div>
+
+<!-- GLOSSARY -->
+<div class="panel" id="panel-glossary">
+  <div class="ggrid">
+    <div class="gitem"><b>Token</b><p>The unit of text a model reads and writes - roughly a word or word piece. Every generated word you see started life as one chosen token.</p></div>
+    <div class="gitem"><b>Tokenization</b><p>Splitting text into tokens and mapping each to an integer ID (the=40, teacher=3021).</p></div>
+    <div class="gitem"><b>Embedding</b><p>The vector form of a token ID - the numbers the transformer actually computes with.</p></div>
+    <div class="gitem"><b>Logits</b><p>The raw scores the model outputs for every vocabulary word before they are turned into probabilities.</p></div>
+    <div class="gitem"><b>Softmax</b><p>Converts logits into probabilities that sum to exactly 1 - which is why sampling slices never overlap.</p></div>
+    <div class="gitem"><b>Greedy decoding</b><p>Always take the highest-probability token. Deterministic, but repetitive and less creative.</p></div>
+    <div class="gitem"><b>Categorical sampling</b><p>Draw a random u in [0,1] and take the token whose probability-width slice contains it. Over many draws, tokens appear in proportion to their probabilities.</p></div>
+    <div class="gitem"><b>Candidate tokens</b><p>The shortlist produced by several sampling draws at one position. The tournament picks one of them to actually emit.</p></div>
+    <div class="gitem"><b>Pseudorandom</b><p>Looks random but is fully reproducible from the same seed - the property that lets a detector recompute the exact same scores.</p></div>
+    <div class="gitem"><b>Watermarking seed</b><p>The input driving all watermark randomness: the provider's secret key combined with the tokens preceding the current position.</p></div>
+    <div class="gitem"><b>Secret key</b><p>The provider's private value inside the seed. Without it, nobody can compute or forge the watermark scores.</p></div>
+    <div class="gitem"><b>g-function / g-value</b><p>A pseudorandom scoring function (one per tournament layer: g1, g2, ...). It scores (seed + candidate token + layer number) and outputs a g-value - the watermark's hidden vote for that token.</p></div>
+    <div class="gitem"><b>Tournament sampling</b><p>SynthID-Text's selection method: candidates play knockout matches judged by the g-functions, and the winner is emitted. Lower-probability tokens can win on watermark strength.</p></div>
+    <div class="gitem"><b>Entropy</b><p>How uncertain the next token is. Low entropy = nearly forced continuation, little room to watermark. High entropy = many options, watermark embeds strongly.</p></div>
+    <div class="gitem"><b>Detection score (mean g-value)</b><p>Count how many g-values equal 1 across the text's tokens and divide by the total. Above a threshold (60% in the workbook) the text is flagged as watermarked.</p></div>
+    <div class="gitem"><b>SynthID-Text</b><p>Google DeepMind's production text-watermarking scheme (Nature, Oct 2024), used in Gemini and the basis of the scheme rebuilt in this session.</p></div>
+    <div class="gitem"><b>Distillation</b><p>Training a student model on a teacher model's outputs - one way watermarked text can flow into future training data.</p></div>
+  </div>
+</div>
+
+</main>
+
+<footer><div class="wrap">
+  Notes captured live from the Zoom session "Watermarking by hand with Mohsena Ashraf" (Frontier AI Seminar, Fall 2026, hosted by Prof. Tom Yeh), Oct 17, 2026, 12:00-1:05 AM SGT. Transcript is from Zoom's auto-captions and may contain recognition errors. Session content credit: Mohsena Ashraf and the AI by Hand team. Workbook: <a href="https://byhand.ai/watermarking">byhand.ai/watermarking</a>.
+</div></footer>
+
+<script>
+(function(){
+  var root=document.documentElement,btn=document.getElementById('themeToggle');
+  function set(t){root.setAttribute('data-theme',t);btn.textContent=t==='dark'?'Light mode':'Dark mode';try{localStorage.setItem('wm-theme',t)}catch(e){}}
+  var saved=null;try{saved=localStorage.getItem('wm-theme')}catch(e){}
+  set(saved==='light'?'light':'dark');
+  btn.addEventListener('click',function(){set(root.getAttribute('data-theme')==='dark'?'light':'dark')});
+  var tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
+  tabs.forEach(function(t){t.addEventListener('click',function(){
+    tabs.forEach(function(x){x.classList.remove('active')});t.classList.add('active');
+    panels.forEach(function(p){p.classList.remove('active')});
+    document.getElementById('panel-'+t.getAttribute('data-panel')).classList.add('active');
+    window.scrollTo({top:0});
+  })});
+  var cb=document.getElementById('copyBtn');
+  cb.addEventListener('click',function(){
+    var txt=document.getElementById('transcriptBody').innerText;
+    function done(){cb.textContent='Copied';cb.classList.add('copy-ok');setTimeout(function(){cb.textContent='Copy transcript';cb.classList.remove('copy-ok')},1800)}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){fallback()})}else{fallback()}
+    function fallback(){var ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){}document.body.removeChild(ta)}
+  });
+})();
+</script>
+</body>
+</html>
